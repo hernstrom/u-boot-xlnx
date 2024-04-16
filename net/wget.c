@@ -398,9 +398,7 @@ static void wget_handler(uchar *pkt, unsigned int tcp_seq_num,
 		}
 		next_data_seq_num = tcp_seq_num + len;
 
-		if (tcp_seq_num >= initial_data_seq_num &&
-		    store_block(pkt, tcp_seq_num - initial_data_seq_num,
-				len) != 0) {
+		if (store_block(pkt, tcp_seq_num - initial_data_seq_num, len) != 0) {
 			wget_fail("wget: store error\n",
 				  tcp_seq_num, tcp_ack_num, action);
 			net_set_state(NETLOOP_FAIL);
