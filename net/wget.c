@@ -22,6 +22,7 @@ static const char content_len[] = "Content-Length";
 static const char linefeed[] = "\r\n";
 static struct in_addr web_server_ip;
 static int our_port;
+static int wget_remote_port;
 static int wget_timeout_count;
 
 struct pkt_qd {
@@ -96,13 +97,13 @@ static void wget_send_stored(void)
 	case WGET_CLOSED:
 		debug_cond(DEBUG_WGET, "wget: send SYN\n");
 		current_wget_state = WGET_CONNECTING;
-		net_send_tcp_packet(0, SERVER_PORT, our_port, action,
+		net_send_tcp_packet(0, wget_remote_port, our_port, action,
 				    tcp_seq_num, tcp_ack_num);
 		packets = 0;
 		break;
 	case WGET_CONNECTING:
 		pkt_q_idx = 0;
-		net_send_tcp_packet(0, SERVER_PORT, our_port, action,
+		net_send_tcp_packet(0, wget_remote_port, our_port, action,
 				    tcp_seq_num, tcp_ack_num);
 
 		ptr = net_tx_packet + net_eth_hdr_size() +
@@ -117,14 +118,14 @@ static void wget_send_stored(void)
 
 		memcpy(offset, &bootfile3, strlen(bootfile3));
 		offset += strlen(bootfile3);
-		net_send_tcp_packet((offset - ptr), SERVER_PORT, our_port,
+		net_send_tcp_packet((offset - ptr), wget_remote_port, our_port,
 				    TCP_PUSH, tcp_seq_num, tcp_ack_num);
 		current_wget_state = WGET_CONNECTED;
 		break;
 	case WGET_CONNECTED:
 	case WGET_TRANSFERRING:
 	case WGET_TRANSFERRED:
-		net_send_tcp_packet(0, SERVER_PORT, our_port, action,
+		net_send_tcp_packet(0, wget_remote_port, our_port, action,
 				    tcp_seq_num, tcp_ack_num);
 		break;
 	}
@@ -382,6 +383,8 @@ static unsigned int random_port(void)
 
 void wget_start(void)
 {
+	char *ep;   /* Environment pointer */
+
 	image_url = strchr(net_boot_file_name, ':');
 	if (image_url > 0) {
 		web_server_ip = string_to_ip(net_boot_file_name);
@@ -426,6 +429,18 @@ void wget_start(void)
 	current_wget_state = WGET_CLOSED;
 
 	our_port = random_port();
+	wget_remote_port = SERVER_PORT;
+
+	/* Override default port assignment based on environment variables */
+	ep = env_get("wgetdstp");
+	if (ep != NULL)
+		wget_remote_port = simple_strtol(ep, NULL, 10);
+	ep = env_get("wgetsrcp");
+	if (ep != NULL)
+		our_port = simple_strtol(ep, NULL, 10);
+
+	debug_cond(DEBUG_WGET,
+		   "\nwget:Remote port: %d\nLocal port:  %d\n", wget_remote_port, our_port);
 
 	/*
 	 * Zero out server ether to force arp resolution in case
