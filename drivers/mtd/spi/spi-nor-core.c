@@ -3148,6 +3148,7 @@ static int spi_nor_init_params(struct spi_nor *nor,
 			printf("  rc == -EOVERFLOW\n");
 			idx++;
 		} else {
+			printf("[%s] flash_size[%d]:%llu\n", __func__, i, flash_size[i]);
 			idx++;
 			i++;
 			if (!(nor->flags & SNOR_F_HAS_STACKED))
@@ -3155,7 +3156,6 @@ static int spi_nor_init_params(struct spi_nor *nor,
 			if (!(nor->spi->flags & SPI_XFER_STACKED))
 				nor->spi->flags |= SPI_XFER_STACKED;
 		}
-		printf("[%s] flash_size[%d]:%llu\n", __func__, i, flash_size[i]);
 	}
 
 	i = 0;
@@ -3172,12 +3172,12 @@ static int spi_nor_init_params(struct spi_nor *nor,
 			printf("  rc == -EOVERFLOW\n");
 			idx++;
 		} else {
+			printf("[%s] flash_size[%d]:%llu\n", __func__, i, flash_size[i]);
 			idx++;
 			i++;
 			if (!(nor->flags & SNOR_F_HAS_PARALLEL))
 				nor->flags |= SNOR_F_HAS_PARALLEL;
 		}
-		printf("[%s] flash_size[%d]:%llu\n", __func__, i, flash_size[i]);
 	}
 
 	printf("[%s] nor->flags:%x\n", __func__, nor->flags);
