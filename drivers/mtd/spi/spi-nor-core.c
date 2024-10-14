@@ -3155,7 +3155,7 @@ static int spi_nor_init_params(struct spi_nor *nor,
 			if (!(nor->spi->flags & SPI_XFER_STACKED))
 				nor->spi->flags |= SPI_XFER_STACKED;
 		}
-		printf("[%s] flash_size[%d]:%x\n", __func__, i, flash_size[i]);
+		printf("[%s] flash_size[%d]:%llu\n", __func__, i, flash_size[i]);
 	}
 
 	i = 0;
@@ -3177,17 +3177,16 @@ static int spi_nor_init_params(struct spi_nor *nor,
 			if (!(nor->flags & SNOR_F_HAS_PARALLEL))
 				nor->flags |= SNOR_F_HAS_PARALLEL;
 		}
-		printf("[%s] flash_size[%d]:%x\n", __func__, i, flash_size[i]);
+		printf("[%s] flash_size[%d]:%llu\n", __func__, i, flash_size[i]);
 	}
 
 	printf("[%s] nor->flags:%x\n", __func__, nor->flags);
-	printf("[%s] START params->size:%x\n", __func__, params->size);
-	params->size
+	printf("[%s] START params->size:%llu\n", __func__, params->size);
 	if (nor->flags & (SNOR_F_HAS_STACKED | SNOR_F_HAS_PARALLEL))
 		for (idx = 1; idx < SNOR_FLASH_CNT_MAX; idx++)
 			params->size += flash_size[idx];
 
-	printf("[%s] FINISH params->size:%x\n", __func__, params->size);
+	printf("[%s] FINISH params->size:%llu\n", __func__, params->size);
 	/*
 	 * In parallel-memories the erase operation is
 	 * performed on both the flashes simultaneously
