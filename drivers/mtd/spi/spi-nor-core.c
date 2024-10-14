@@ -9,6 +9,8 @@
  * Synced from Linux v4.19
  */
 
+#define DEBUG_LOG
+
 #include <common.h>
 #include <display_options.h>
 #include <log.h>
@@ -3183,14 +3185,19 @@ static int spi_nor_init_params(struct spi_nor *nor,
 	 * flashes connected in stacked mode.
 	 * The flashes that are connected in parallel mode should be identical.
 	 */
+	printf("[%s] CHECK STACKED START\n", __func__);
 	while (i < SNOR_FLASH_CNT_MAX) {
+		printf("[%s] i:%d idx:%d CHECK STACKED LOOP:\n", __func__, i, idx);
 		rc = ofnode_read_u64_index(dev_ofnode(dev), "stacked-memories",
 					   idx, &flash_size[i]);
 		if (rc == -EINVAL) {
+			printf("  rc == -EINVAL\n");
 			break;
 		} else if (rc == -EOVERFLOW) {
+			printf("  rc == -EOVERFLOW\n");
 			idx++;
 		} else {
+			printf("[%s] flash_size[%d]:%llu\n", __func__, i, flash_size[i]);
 			idx++;
 			i++;
 			if (!(nor->flags & SNOR_F_HAS_STACKED))
@@ -3202,26 +3209,36 @@ static int spi_nor_init_params(struct spi_nor *nor,
 
 	i = 0;
 	idx = 0;
+	printf("[%s] CHECK PARALLEL START\n", __func__);
 	while (i < SNOR_FLASH_CNT_MAX) {
+		printf("[%s] i:%d idx:%d CHECK PARALLEL LOOP:\n", __func__, i, idx);
 		rc = ofnode_read_u64_index(dev_ofnode(dev), "parallel-memories",
 					   idx, &flash_size[i]);
 		if (rc == -EINVAL) {
+			printf("  rc == -EINVAL\n");
 			break;
 		} else if (rc == -EOVERFLOW) {
+			printf("  rc == -EOVERFLOW\n");
 			idx++;
 		} else {
+			printf("[%s] flash_size[%d]:%llu\n", __func__, i, flash_size[i]);
 			idx++;
 			i++;
 			if (!(nor->flags & SNOR_F_HAS_PARALLEL))
 				nor->flags |= SNOR_F_HAS_PARALLEL;
 		}
 	}
-
+	printf("[%s] nor->flags:%x\n", __func__, nor->flags);
+	printf("[%s] PRESTART params->size:%llu\n", __func__, params->size);
 	if (nor->flags & (SNOR_F_HAS_STACKED | SNOR_F_HAS_PARALLEL)) {
 		params->size = 0;
-		for (idx = 0; idx < SNOR_FLASH_CNT_MAX; idx++)
+		printf("[%s] START params->size:%llu\n", __func__, params->size);
+		for (idx = 0; idx < SNOR_FLASH_CNT_MAX; idx++) {
+			printf("[%s] flash_size[%d]:%llu\n", __func__, idx, flash_size[idx]);
 			params->size += flash_size[idx];
+		}
 	}
+	printf("[%s] FINISH params->size:%llu\n", __func__, params->size);
 	/*
 	 * In parallel-memories the erase operation is
 	 * performed on both the flashes simultaneously
