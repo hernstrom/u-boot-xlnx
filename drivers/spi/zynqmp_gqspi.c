@@ -5,6 +5,7 @@
  * Xilinx ZynqMP Generic Quad-SPI(QSPI) controller driver(master mode only)
  */
 
+#define LOG_DEBUG
 #include <common.h>
 #include <cpu_func.h>
 #include <log.h>
@@ -198,7 +199,7 @@ static int zynqmp_qspi_of_to_plat(struct udevice *bus)
 {
 	struct zynqmp_qspi_plat *plat = dev_get_plat(bus);
 
-	debug("%s\n", __func__);
+	printf("%s\n", __func__);
 
 	plat->regs = (struct zynqmp_qspi_regs *)(dev_read_addr(bus) +
 						 GQSPI_REG_OFFSET);
@@ -255,7 +256,7 @@ static u32 zynqmp_qspi_bus_select(struct zynqmp_qspi_priv *priv)
 					 GQSPI_GFIFO_CS_LOWER |
 					 GQSPI_GFIFO_CS_UPPER;
 		else
-			debug("Wrong Bus selection:0x%x\n", priv->bus);
+			printf("Wrong Bus selection:0x%x\n", priv->bus);
 	} else {
 		if (priv->u_page)
 			gqspi_fifo_reg = GQSPI_GFIFO_LOW_BUS |
@@ -277,7 +278,7 @@ static u32 zynqmp_qspi_genfifo_mode(u8 buswidth)
 	case 4:
 		return GQSPI_SPI_MODE_QSPI;
 	default:
-		debug("Unsupported bus width %u\n", buswidth);
+		printf("Unsupported bus width %u\n", buswidth);
 		return GQSPI_SPI_MODE_SPI;
 	}
 }
@@ -327,7 +328,7 @@ static void zynqmp_qspi_chipselect(struct zynqmp_qspi_priv *priv, int is_on)
 		gqspi_fifo_reg |= GQSPI_IMD_DATA_CS_DEASSERT;
 	}
 
-	debug("GFIFO_CMD_CS: 0x%x\n", gqspi_fifo_reg);
+	printf("GFIFO_CMD_CS: 0x%x\n", gqspi_fifo_reg);
 
 	zynqmp_qspi_fill_gen_fifo(priv, gqspi_fifo_reg);
 }
@@ -343,7 +344,7 @@ static void zynqmp_qspi_set_tapdelay(struct udevice *bus, u32 baudrateval)
 	clk_rate = plat->frequency;
 	reqhz = (clk_rate / (GQSPI_BAUD_DIV_SHIFT << baudrateval));
 
-	debug("%s, req_hz:%d, clk_rate:%d, baudrateval:%d\n",
+	printf("%s, req_hz:%d, clk_rate:%d, baudrateval:%d\n",
 	      __func__, reqhz, clk_rate, baudrateval);
 
 	if (!(IS_ENABLED(CONFIG_ARCH_VERSAL) ||
@@ -400,7 +401,7 @@ static int zynqmp_qspi_set_speed(struct udevice *bus, uint speed)
 	if (!speed || speed > priv->max_hz)
 		speed = priv->max_hz;
 
-	debug("%s %d\n", __func__, speed);
+	printf("%s %d\n", __func__, speed);
 
 	if (plat->speed_hz != speed) {
 		while ((baud_rate_val < 8) &&
@@ -419,7 +420,7 @@ static int zynqmp_qspi_set_speed(struct udevice *bus, uint speed)
 		writel(confr, &regs->confr);
 		zynqmp_qspi_set_tapdelay(bus, baud_rate_val);
 
-		debug("regs=%p, speed=%d\n", priv->regs, plat->speed_hz);
+		printf("regs=%p, speed=%d\n", priv->regs, plat->speed_hz);
 	}
 
 	return 0;
@@ -439,13 +440,14 @@ static int zynqmp_qspi_child_pre_probe(struct udevice *bus)
 
 static int zynqmp_qspi_probe(struct udevice *bus)
 {
+	printf("[%s] START\n", __func__);
 	struct zynqmp_qspi_plat *plat = dev_get_plat(bus);
 	struct zynqmp_qspi_priv *priv = dev_get_priv(bus);
 	struct clk clk;
 	unsigned long clock;
 	int ret;
 
-	debug("%s: bus:%p, priv:%p\n", __func__, bus, priv);
+	printf("%s: bus:%p, priv:%p\n", __func__, bus, priv);
 
 	priv->regs = plat->regs;
 	priv->dma_regs = plat->dma_regs;
@@ -462,7 +464,7 @@ static int zynqmp_qspi_probe(struct udevice *bus)
 		dev_err(bus, "failed to get rate\n");
 		return clock;
 	}
-	debug("%s: CLK %ld\n", __func__, clock);
+	printf("%s: CLK %ld\n", __func__, clock);
 
 	ret = clk_enable(&clk);
 	if (ret) {
@@ -484,7 +486,7 @@ static int zynqmp_qspi_set_mode(struct udevice *bus, uint mode)
 	struct zynqmp_qspi_regs *regs = priv->regs;
 	u32 confr;
 
-	debug("%s\n", __func__);
+	printf("%s\n", __func__);
 	/* Set the SPI Clock phase and polarities */
 	confr = readl(&regs->confr);
 	confr &= ~(GQSPI_CONFIG_CPHA_MASK | GQSPI_CONFIG_CPOL_MASK);
@@ -507,7 +509,7 @@ static int zynqmp_qspi_fill_tx_fifo(struct zynqmp_qspi_priv *priv, u32 size)
 	u32 *buf = (u32 *)priv->tx_buf;
 	u32 len = size;
 
-	debug("TxFIFO: 0x%x, size: 0x%x\n", readl(&regs->isr),
+	printf("TxFIFO: 0x%x, size: 0x%x\n", readl(&regs->isr),
 	      size);
 
 	/* Enable interrupts */
@@ -583,7 +585,7 @@ static void zynqmp_qspi_genfifo_cmd(struct zynqmp_qspi_priv *priv)
 		gen_fifo_cmd |= GQSPI_GFIFO_TX;
 		gen_fifo_cmd |= addr;
 
-		debug("GFIFO_CMD_Cmd = 0x%x\n", gen_fifo_cmd);
+		printf("GFIFO_CMD_Cmd = 0x%x\n", gen_fifo_cmd);
 
 		zynqmp_qspi_fill_gen_fifo(priv, gen_fifo_cmd);
 	}
@@ -645,7 +647,7 @@ static int zynqmp_qspi_genfifo_fill_tx(struct zynqmp_qspi_priv *priv)
 		len = zynqmp_qspi_calc_exp(priv, &gen_fifo_cmd);
 		zynqmp_qspi_fill_gen_fifo(priv, gen_fifo_cmd);
 
-		debug("GFIFO_CMD_TX:0x%x\n", gen_fifo_cmd);
+		printf("GFIFO_CMD_TX:0x%x\n", gen_fifo_cmd);
 
 		if (gen_fifo_cmd & GQSPI_GFIFO_EXP_MASK)
 			ret = zynqmp_qspi_fill_tx_fifo(priv, 1 << len);
@@ -677,7 +679,7 @@ static int zynqmp_qspi_start_io(struct zynqmp_qspi_priv *priv,
 		else
 			priv->bytes_to_receive = len;
 		zynqmp_qspi_fill_gen_fifo(priv, gen_fifo_cmd);
-		debug("GFIFO_CMD_RX:0x%x\n", gen_fifo_cmd);
+		printf("GFIFO_CMD_RX:0x%x\n", gen_fifo_cmd);
 		/* Manual start */
 		config_reg = readl(&regs->confr);
 		config_reg |= GQSPI_STRT_GEN_FIFO;
@@ -706,7 +708,7 @@ static int zynqmp_qspi_start_io(struct zynqmp_qspi_priv *priv,
 			}
 		}
 
-		debug("buf:0x%lx, rxbuf:0x%lx, *buf:0x%x len: 0x%x\n",
+		printf("buf:0x%lx, rxbuf:0x%lx, *buf:0x%x len: 0x%x\n",
 		      (unsigned long)buf, (unsigned long)priv->rx_buf,
 		      *buf, actuallen);
 		if (!timeout) {
@@ -750,7 +752,7 @@ static int zynqmp_qspi_start_dma(struct zynqmp_qspi_priv *priv,
 			zynqmp_qspi_calc_exp(priv, &gen_fifo_cmd);
 			zynqmp_qspi_fill_gen_fifo(priv, gen_fifo_cmd);
 
-			debug("GFIFO_CMD_RX:0x%x\n", gen_fifo_cmd);
+			printf("GFIFO_CMD_RX:0x%x\n", gen_fifo_cmd);
 		}
 
 		ret = wait_for_bit_le32(&dma_regs->dmaisr,
@@ -765,7 +767,7 @@ static int zynqmp_qspi_start_dma(struct zynqmp_qspi_priv *priv,
 
 		writel(GQSPI_DMA_DST_I_STS_DONE, &dma_regs->dmaisr);
 
-		debug("buf:0x%lx, rxbuf:0x%lx, *buf:0x%x len: 0x%x\n",
+		printf("buf:0x%lx, rxbuf:0x%lx, *buf:0x%x len: 0x%x\n",
 		      (unsigned long)buf, (unsigned long)priv->rx_buf, *buf,
 		      actuallen);
 

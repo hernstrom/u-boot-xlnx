@@ -4,7 +4,7 @@
  */
 
 #define LOG_CATEGORY UCLASS_SPI
-
+#define LOG_DEBUG
 #include <common.h>
 #include <dm.h>
 #include <errno.h>
@@ -358,6 +358,7 @@ int spi_find_bus_and_cs(int busnum, int cs, struct udevice **busp,
 int spi_get_bus_and_cs(int busnum, int cs, struct udevice **busp,
 		       struct spi_slave **devp)
 {
+	printf("[%s] START\n", __func__);
 	struct udevice *bus, *dev;
 	struct dm_spi_bus *bus_data;
 	struct spi_slave *slave;
@@ -372,9 +373,11 @@ int spi_get_bus_and_cs(int busnum, int cs, struct udevice **busp,
 		log_err("Invalid bus %d (err=%d)\n", busnum, ret);
 		return ret;
 	}
+	printf("[%s] [1] spi_find_chip_select\n", __func__);
 	ret = spi_find_chip_select(bus, cs, &dev);
+	printf("[%s] [2] spi_find_chip_select\n", __func__);
 	if (ret) {
-		dev_err(bus, "Invalid chip select %d:%d (err=%d)\n", busnum, cs, ret);
+		dev_err(bus, "1Invalid chip select %d:%d (err=%d)\n", busnum, cs, ret);
 		return ret;
 	}
 
@@ -415,6 +418,8 @@ int _spi_get_bus_and_cs(int busnum, int cs, int speed, int mode,
 			const char *drv_name, const char *dev_name,
 			struct udevice **busp, struct spi_slave **devp)
 {
+	printf("[%s] START\n", __func__);
+
 	struct udevice *bus, *dev;
 	struct dm_spi_slave_plat *plat;
 	struct dm_spi_bus *bus_data;
@@ -431,7 +436,9 @@ int _spi_get_bus_and_cs(int busnum, int cs, int speed, int mode,
 		log_err("Invalid bus %d (err=%d)\n", busnum, ret);
 		return ret;
 	}
+	printf("[%s] [3] spi_find_chip_select\n", __func__);
 	ret = spi_find_chip_select(bus, cs, &dev);
+	printf("[%s] [4] spi_find_chip_select\n", __func__);
 
 	/*
 	 * If there is no such device, create one automatically. This means
@@ -460,7 +467,7 @@ int _spi_get_bus_and_cs(int busnum, int cs, int speed, int mode,
 		plat->mode = mode;
 		created = true;
 	} else if (ret) {
-		dev_err(bus, "Invalid chip select %d:%d (err=%d)\n", busnum, cs, ret);
+		dev_err(bus, "21Invalid chip select %d:%d (err=%d)\n", busnum, cs, ret);
 		return ret;
 	} else if (dev) {
 		plat = dev_get_parent_plat(dev);
