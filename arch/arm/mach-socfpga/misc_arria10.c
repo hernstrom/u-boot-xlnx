@@ -219,7 +219,7 @@ int qspi_flash_software_reset(void)
 				     &flash);
 
 	if (ret) {
-		debug("Failed to initialize SPI flash at ");
+		debug("4Failed to initialize SPI flash at ");
 		debug("%u:%u (error %d)\n", CONFIG_SF_DEFAULT_BUS,
 		      CONFIG_SF_DEFAULT_CS, ret);
 		return -ENODEV;

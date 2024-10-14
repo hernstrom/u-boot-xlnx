@@ -38,7 +38,7 @@ int do_syno_populate(int argc, char *const argv[])
 
 	flash = spi_flash_probe(bus, cs, speed, mode);
 	if (!flash) {
-		printf("Failed to initialize SPI flash at %u:%u\n", bus, cs);
+		printf("3Failed to initialize SPI flash at %u:%u\n", bus, cs);
 		return 1;
 	}
 
