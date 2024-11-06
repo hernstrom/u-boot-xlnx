@@ -1457,7 +1457,7 @@ int ofnode_write_u32(ofnode node, const char *propname, u32 value)
 
 	assert(ofnode_valid(node));
 
-	log_printf("%s = %x", propname, value);
+	log_debug("%s = %x", propname, value);
 	val = malloc(sizeof(*val));
 	if (!val)
 		return -ENOMEM;
@@ -1658,12 +1658,12 @@ int ofnode_copy_props(ofnode src, ofnode dst)
 
 		val = ofprop_get_property(&prop, &name, &len);
 		if (!val) {
-			log_printf("Cannot read prop (err=%d)\n", len);
+			log_debug("Cannot read prop (err=%d)\n", len);
 			return log_msg_ret("get", -EINVAL);
 		}
 		ret = ofnode_write_prop(dst, name, val, len, true);
 		if (ret) {
-			log_printf("Cannot write prop (err=%d)\n", ret);
+			log_debug("Cannot write prop (err=%d)\n", ret);
 			return log_msg_ret("wr", -EINVAL);
 		}
 	}
