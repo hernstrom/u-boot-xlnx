@@ -144,6 +144,8 @@
 
 #define GEM_MDC_SET(val)	FIELD_PREP(GENMASK(20, 18), val)
 
+#define DEBUG 1
+
 /* Device registers */
 struct zynq_gem_regs {
 	u32 nwctrl; /* 0x0 - Network Control reg */
@@ -233,6 +235,7 @@ struct zynq_gem_priv {
 static int phy_setup_op(struct zynq_gem_priv *priv, u32 phy_addr, u32 regnum,
 			u32 op, u16 *data)
 {
+	printf("[%s] ENTRY\n",__func__);
 	u32 mgtcr;
 	struct zynq_gem_regs *regs = priv->mdiobase;
 	int err;
@@ -265,6 +268,7 @@ static int phyread(struct zynq_gem_priv *priv, u32 phy_addr,
 		   u32 regnum, u16 *val)
 {
 	int ret;
+	printf("[%s] ENTRY\n",__func__);
 
 	ret = phy_setup_op(priv, phy_addr, regnum,
 			   ZYNQ_GEM_PHYMNTNC_OP_R_MASK, val);
@@ -279,6 +283,7 @@ static int phyread(struct zynq_gem_priv *priv, u32 phy_addr,
 static int phywrite(struct zynq_gem_priv *priv, u32 phy_addr,
 		    u32 regnum, u16 data)
 {
+	printf("[%s] ENTRY\n",__func__);
 	debug("%s: phy_addr %d, regnum 0x%x, data 0x%x\n", __func__, phy_addr,
 	      regnum, data);
 
@@ -288,6 +293,7 @@ static int phywrite(struct zynq_gem_priv *priv, u32 phy_addr,
 
 static int zynq_gem_setup_mac(struct udevice *dev)
 {
+	printf("[%s] ENTRY\n",__func__);
 	u32 i, macaddrlow, macaddrhigh;
 	struct eth_pdata *pdata = dev_get_plat(dev);
 	struct zynq_gem_priv *priv = dev_get_priv(dev);
@@ -318,6 +324,7 @@ static int zynq_gem_setup_mac(struct udevice *dev)
 
 static int zynq_phy_init(struct udevice *dev)
 {
+	printf("[%s] ENTRY\n",__func__);
 	int ret;
 	struct zynq_gem_priv *priv = dev_get_priv(dev);
 	struct zynq_gem_regs *regs_mdio = priv->mdiobase;
@@ -357,6 +364,7 @@ static int zynq_phy_init(struct udevice *dev)
 
 static u32 gem_mdc_clk_div(struct zynq_gem_priv *priv)
 {
+	printf("[%s] ENTRY\n",__func__);
 	u32 config;
 	unsigned long pclk_hz;
 
@@ -383,6 +391,7 @@ static u32 gem_mdc_clk_div(struct zynq_gem_priv *priv)
 
 static int zynq_gem_init(struct udevice *dev)
 {
+	printf("[%s] ENTRY\n",__func__);
 	u32 i, nwconfig, nwcfg;
 	int ret;
 	unsigned long clk_rate = 0;
@@ -566,6 +575,7 @@ static int zynq_gem_init(struct udevice *dev)
 
 static int zynq_gem_send(struct udevice *dev, void *ptr, int len)
 {
+	printf("[%s] ENTRY\n",__func__);
 	dma_addr_t addr;
 	u32 size;
 	struct zynq_gem_priv *priv = dev_get_priv(dev);
@@ -616,6 +626,7 @@ static int zynq_gem_send(struct udevice *dev, void *ptr, int len)
 /* Do not check frame_recd flag in rx_status register 0x20 - just poll BD */
 static int zynq_gem_recv(struct udevice *dev, int flags, uchar **packetp)
 {
+	printf("[%s] ENTRY\n",__func__);
 	int frame_len;
 	dma_addr_t addr;
 	struct zynq_gem_priv *priv = dev_get_priv(dev);
@@ -654,6 +665,7 @@ static int zynq_gem_recv(struct udevice *dev, int flags, uchar **packetp)
 
 static int zynq_gem_free_pkt(struct udevice *dev, uchar *packet, int length)
 {
+	printf("[%s] ENTRY\n",__func__);
 	struct zynq_gem_priv *priv = dev_get_priv(dev);
 	struct emac_bd *current_bd = &priv->rx_bd[priv->rxbd_current];
 	struct emac_bd *first_bd;
@@ -691,6 +703,7 @@ static int zynq_gem_free_pkt(struct udevice *dev, uchar *packet, int length)
 
 static void zynq_gem_halt(struct udevice *dev)
 {
+	printf("[%s] ENTRY\n",__func__);
 	struct zynq_gem_priv *priv = dev_get_priv(dev);
 	struct zynq_gem_regs *regs = priv->iobase;
 
@@ -701,6 +714,7 @@ static void zynq_gem_halt(struct udevice *dev)
 static int zynq_gem_miiphy_read(struct mii_dev *bus, int addr,
 				int devad, int reg)
 {
+	printf("[%s] ENTRY\n",__func__);
 	struct zynq_gem_priv *priv = bus->priv;
 	int ret;
 	u16 val = 0;
@@ -713,6 +727,7 @@ static int zynq_gem_miiphy_read(struct mii_dev *bus, int addr,
 static int zynq_gem_miiphy_write(struct mii_dev *bus, int addr, int devad,
 				 int reg, u16 value)
 {
+	printf("[%s] ENTRY\n",__func__);
 	struct zynq_gem_priv *priv = bus->priv;
 
 	debug("%s 0x%x, 0x%x, 0x%x\n", __func__, addr, reg, value);
@@ -721,6 +736,7 @@ static int zynq_gem_miiphy_write(struct mii_dev *bus, int addr, int devad,
 
 static int zynq_gem_reset_init(struct udevice *dev)
 {
+	printf("[%s] ENTRY\n",__func__);
 	struct zynq_gem_priv *priv = dev_get_priv(dev);
 	int ret;
 
@@ -741,6 +757,7 @@ static int zynq_gem_reset_init(struct udevice *dev)
 
 static int gem_zynqmp_set_dynamic_config(struct udevice *dev)
 {
+	printf("[%s] ENTRY\n",__func__);
 	u32 pm_info[2];
 	int ret;
 
@@ -775,41 +792,58 @@ static int gem_zynqmp_set_dynamic_config(struct udevice *dev)
 
 static int zynq_gem_probe(struct udevice *dev)
 {
+	printf("[%s] ENTRY\n",__func__);
 	void *bd_space;
 	struct zynq_gem_priv *priv = dev_get_priv(dev);
 	struct zynq_gem_regs *regs = priv->iobase;
 	int ret, val;
 	struct phy phy;
 
+	printf("\nZYNQ GEM INTERFACE: %s\n", phy_string_for_interface(priv->interface));
+
+	printf("[%s]  1\n",__func__);
 	if (priv->interface == PHY_INTERFACE_MODE_SGMII) {
+		printf("[%s]  2\n",__func__);
 		ret = generic_phy_get_by_index(dev, 0, &phy);
 		if (!ret) {
+			printf("[%s]  3\n",__func__);
 			ret = generic_phy_init(&phy);
-			if (ret)
+			if (ret) {
+				printf("[%s]  4\n",__func__);
 				return ret;
+			}
 		} else if (ret != -ENOENT) {
+			printf("[%s]  5\n",__func__);
 			debug("could not get phy (err %d)\n", ret);
 			return ret;
 		}
 	}
 
+	printf("[%s]  6\n",__func__);
 	ret = zynq_gem_reset_init(dev);
-	if (ret)
+	if (ret) {
+		printf("[%s]  7\n",__func__);
 		return ret;
+	}
 
 	/* Align rxbuffers to ARCH_DMA_MINALIGN */
+	printf("[%s]  8\n",__func__);
 	priv->rxbuffers = memalign(ARCH_DMA_MINALIGN, RX_BUF * PKTSIZE_ALIGN);
-	if (!priv->rxbuffers)
+	if (!priv->rxbuffers) {
+		printf("[%s]  9\n",__func__);
 		return -ENOMEM;
+	}
 
 	memset(priv->rxbuffers, 0, RX_BUF * PKTSIZE_ALIGN);
 	ulong addr = (ulong)priv->rxbuffers;
 	flush_dcache_range(addr, addr + roundup(RX_BUF * PKTSIZE_ALIGN, ARCH_DMA_MINALIGN));
 	barrier();
 
+	printf("[%s] 10\n",__func__);
 	/* Align bd_space to MMU_SECTION_SHIFT */
 	bd_space = memalign(1 << MMU_SECTION_SHIFT, BD_SPACE);
 	if (!bd_space) {
+		printf("[%s] 11\n",__func__);
 		ret = -ENOMEM;
 		goto err1;
 	}
@@ -822,56 +856,84 @@ static int zynq_gem_probe(struct udevice *dev)
 	priv->rx_bd = (struct emac_bd *)((ulong)bd_space + BD_SEPRN_SPACE);
 
 	ret = clk_get_by_name(dev, "tx_clk", &priv->tx_clk);
+	printf("[%s] 12\n",__func__);
 	if (ret < 0) {
+		printf("[%s] 13\n",__func__);
 		dev_err(dev, "failed to get tx_clock\n");
 		goto err2;
 	}
 
+	printf("[%s] 14\n",__func__);
 	if (priv->clk_en_info & RXCLK_EN) {
+		printf("[%s] 15\n",__func__);
 		ret = clk_get_by_name(dev, "rx_clk", &priv->rx_clk);
 		if (ret < 0) {
+			printf("[%s] 16\n",__func__);
 			dev_err(dev, "failed to get rx_clock\n");
 			goto err2;
 		}
 	}
 
+	printf("[%s] 17\n",__func__);
 	ret = clk_get_by_name(dev, "pclk", &priv->pclk);
 	if (ret < 0) {
+		printf("[%s] 18\n",__func__);
 		dev_err(dev, "failed to get pclk clock\n");
 		goto err2;
 	}
 
-	if (IS_ENABLED(CONFIG_DM_ETH_PHY))
+	printf("[%s] 19\n",__func__);
+	if (IS_ENABLED(CONFIG_DM_ETH_PHY)) {
+		printf("[%s] 20\n",__func__);
 		priv->bus = eth_phy_get_mdio_bus(dev);
+	}
 
+	printf("[%s] 21\n",__func__);
 	if (!priv->bus) {
+		printf("[%s] 22\n",__func__);
 		priv->bus = mdio_alloc();
 		priv->bus->read = zynq_gem_miiphy_read;
 		priv->bus->write = zynq_gem_miiphy_write;
 		priv->bus->priv = priv;
 
 		ret = mdio_register_seq(priv->bus, dev_seq(dev));
-		if (ret)
+		if (ret) {
+			printf("[%s] 23\n",__func__);
 			goto err2;
+		}
 	}
 
-	if (IS_ENABLED(CONFIG_DM_ETH_PHY))
+	printf("[%s] 24\n",__func__);
+	if (IS_ENABLED(CONFIG_DM_ETH_PHY)) {
+		printf("[%s] 25\n",__func__);
 		eth_phy_set_mdio_bus(dev, priv->bus);
+	}
 
+	printf("[%s] 26\n",__func__);
 	val = gem_mdc_clk_div(priv);
-	if (val)
+	if (val) {
+		printf("[%s] 27\n",__func__);
 		writel(val, &regs->nwcfg);
+	}
 
+	printf("[%s] 28\n",__func__);
 	ret = zynq_phy_init(dev);
-	if (ret)
+	if (ret) {
+		printf("[%s] 29\n",__func__);
 		goto err3;
+	}
 
+	printf("[%s] 30\n",__func__);
 	if (priv->interface == PHY_INTERFACE_MODE_SGMII && phy.dev) {
+		printf("[%s] 31\n",__func__);
 		if (IS_ENABLED(CONFIG_DM_ETH_PHY)) {
+			printf("[%s] 32\n",__func__);
 			if (device_is_compatible(dev, "cdns,zynqmp-gem") ||
 			    device_is_compatible(dev, "xlnx,zynqmp-gem")) {
+				printf("[%s] 33\n",__func__);
 				ret = gem_zynqmp_set_dynamic_config(dev);
 				if (ret) {
+					printf("[%s] 34\n",__func__);
 					dev_err
 					(dev,
 					 "Failed to set gem dynamic config\n");
@@ -879,11 +941,14 @@ static int zynq_gem_probe(struct udevice *dev)
 				}
 			}
 		}
+		printf("[%s] 35\n",__func__);
 		ret = generic_phy_power_on(&phy);
-		if (ret)
+		if (ret) {
+			printf("[%s] 36\n",__func__);
 			return ret;
+		}
 	}
-
+	printf("[%s] 37\n",__func__);
 	printf("\nZYNQ GEM: %lx, mdio bus %lx, phyaddr %d, interface %s\n",
 	       (ulong)priv->iobase, (ulong)priv->mdiobase, priv->phydev->addr,
 	       phy_string_for_interface(priv->interface));
@@ -901,6 +966,8 @@ err1:
 
 static int zynq_gem_remove(struct udevice *dev)
 {
+	printf("[%s] ENTRY\n",__func__);
+
 	struct zynq_gem_priv *priv = dev_get_priv(dev);
 
 	free(priv->phydev);
