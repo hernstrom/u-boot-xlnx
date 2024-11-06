@@ -135,18 +135,24 @@ int ofnode_decode_memory_region(ofnode config_node, const char *mem_type,
 
 bool ofnode_phy_is_fixed_link(ofnode eth_node, ofnode *phy_node)
 {
+	printf("[%s] ENTRY\n",__func__);
 	ofnode node, subnode;
 	int len;
 
+	printf("[%s] 1\n",__func__);
 	subnode = ofnode_find_subnode(eth_node, "fixed-link");
+	printf("[%s] ofnode_valid:%d\n", ofnode_valid(subnode));
 	if (ofnode_valid(subnode)) {
+		printf("[%s] 2\n",__func__);
 		/* new binding */
 		node = subnode;
 	} else if (ofnode_get_property(eth_node, "fixed-link", &len) &&
 		   len == (5 * sizeof(__be32))) {
+		printf("[%s] 2\n",__func__);
 		/* old binding */
 		node = eth_node;
 	} else {
+		printf("[%s] 3\n",__func__);
 		return false;
 	}
 
