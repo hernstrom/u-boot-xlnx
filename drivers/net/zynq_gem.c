@@ -800,7 +800,8 @@ static int zynq_gem_probe(struct udevice *dev)
 	struct phy phy;
 
 	printf("\nZYNQ GEM INTERFACE: %s\n", phy_string_for_interface(priv->interface));
-
+	goto err0;
+	
 	// HIT 1
 	printf("[%s]  1\n",__func__);
 	// SKIPPED
@@ -968,6 +969,7 @@ err2:
 err1:
 	free(priv->rxbuffers);
 
+err0:
 	printf("\n(before ret) ZYNQ GEM: %lx, mdio bus %lx, phyaddr %d, interface %s\n",
 	       (ulong)priv->iobase, (ulong)priv->mdiobase, priv->phydev->addr,
 	       phy_string_for_interface(priv->interface));
