@@ -890,20 +890,20 @@ static int zynq_gem_probe(struct udevice *dev)
 		priv->bus = eth_phy_get_mdio_bus(dev);
 	}
 
-	printf("[%s] 21\n",__func__);
-	if (!priv->bus) {
-		printf("[%s] 22\n",__func__);
-		priv->bus = mdio_alloc();
-		priv->bus->read = zynq_gem_miiphy_read;
-		priv->bus->write = zynq_gem_miiphy_write;
-		priv->bus->priv = priv;
+	//printf("[%s] 21\n",__func__);
+	//if (!priv->bus) {
+	//	printf("[%s] 22\n",__func__);
+	//	priv->bus = mdio_alloc();
+	//	priv->bus->read = zynq_gem_miiphy_read;
+	//	priv->bus->write = zynq_gem_miiphy_write;
+	//	priv->bus->priv = priv;
 
-		ret = mdio_register_seq(priv->bus, dev_seq(dev));
-		if (ret) {
-			printf("[%s] 23\n",__func__);
-			goto err2;
-		}
-	}
+	//	ret = mdio_register_seq(priv->bus, dev_seq(dev));
+	//	if (ret) {
+	//		printf("[%s] 23\n",__func__);
+	//		goto err2;
+	//	}
+	//}
 
 	printf("[%s] 24\n",__func__);
 	if (IS_ENABLED(CONFIG_DM_ETH_PHY)) {
@@ -911,12 +911,12 @@ static int zynq_gem_probe(struct udevice *dev)
 		eth_phy_set_mdio_bus(dev, priv->bus);
 	}
 
-	printf("[%s] 26\n",__func__);
-	val = gem_mdc_clk_div(priv);
-	if (val) {
-		printf("[%s] 27\n",__func__);
-		writel(val, &regs->nwcfg);
-	}
+	//printf("[%s] 26\n",__func__);
+	//val = gem_mdc_clk_div(priv);
+	//if (val) {
+	//	printf("[%s] 27\n",__func__);
+	//	writel(val, &regs->nwcfg);
+	//}
 
 	//printf("[%s] 28\n",__func__);
 	//ret = zynq_phy_init(dev);
