@@ -801,7 +801,9 @@ static int zynq_gem_probe(struct udevice *dev)
 
 	printf("\nZYNQ GEM INTERFACE: %s\n", phy_string_for_interface(priv->interface));
 
+	// HIT 1
 	printf("[%s]  1\n",__func__);
+	// SKIPPED
 	if (priv->interface == PHY_INTERFACE_MODE_SGMII) {
 		printf("[%s]  2\n",__func__);
 		ret = generic_phy_get_by_index(dev, 0, &phy);
@@ -818,7 +820,7 @@ static int zynq_gem_probe(struct udevice *dev)
 			return ret;
 		}
 	}
-
+	// HIT 6
 	printf("[%s]  6\n",__func__);
 	ret = zynq_gem_reset_init(dev);
 	if (ret) {
@@ -916,14 +918,16 @@ static int zynq_gem_probe(struct udevice *dev)
 		writel(val, &regs->nwcfg);
 	}
 
-	printf("[%s] 28\n",__func__);
-	ret = zynq_phy_init(dev);
+	//printf("[%s] 28\n",__func__);
+	//ret = zynq_phy_init(dev);
 	if (ret) {
 		printf("[%s] 29\n",__func__);
 		goto err3;
 	}
 
+	// HIT 30
 	printf("[%s] 30\n",__func__);
+	// SKIPPED
 	if (priv->interface == PHY_INTERFACE_MODE_SGMII && phy.dev) {
 		printf("[%s] 31\n",__func__);
 		if (IS_ENABLED(CONFIG_DM_ETH_PHY)) {
@@ -948,6 +952,7 @@ static int zynq_gem_probe(struct udevice *dev)
 			return ret;
 		}
 	}
+	// HIT 37
 	printf("[%s] 37\n",__func__);
 	printf("\nZYNQ GEM: %lx, mdio bus %lx, phyaddr %d, interface %s\n",
 	       (ulong)priv->iobase, (ulong)priv->mdiobase, priv->phydev->addr,
