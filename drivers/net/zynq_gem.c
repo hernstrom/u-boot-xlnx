@@ -850,6 +850,7 @@ static int zynq_gem_probe(struct udevice *dev)
 		goto err1;
 	}
 
+	goto err1;
 	mmu_set_region_dcache_behaviour((phys_addr_t)bd_space,
 					BD_SPACE, DCACHE_OFF);
 
@@ -966,6 +967,10 @@ err2:
 	free(priv->tx_bd);
 err1:
 	free(priv->rxbuffers);
+
+	printf("\n(before ret) ZYNQ GEM: %lx, mdio bus %lx, phyaddr %d, interface %s\n",
+	       (ulong)priv->iobase, (ulong)priv->mdiobase, priv->phydev->addr,
+	       phy_string_for_interface(priv->interface));
 	return ret;
 }
 
