@@ -141,7 +141,7 @@ bool ofnode_phy_is_fixed_link(ofnode eth_node, ofnode *phy_node)
 
 	printf("[%s] 1\n",__func__);
 	subnode = ofnode_find_subnode(eth_node, "fixed-link");
-	printf("[%s] ofnode_valid:%d\n", ofnode_valid(subnode));
+	printf("[%s] ofnode_valid:%d\n", __func__, ofnode_valid(subnode));
 	if (ofnode_valid(subnode)) {
 		printf("[%s] 2\n",__func__);
 		/* new binding */
