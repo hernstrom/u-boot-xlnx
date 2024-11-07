@@ -294,6 +294,8 @@ static int phywrite(struct zynq_gem_priv *priv, u32 phy_addr,
 static int zynq_gem_setup_mac(struct udevice *dev)
 {
 	printf("[%s] ENTRY\n",__func__);
+	printf("[%s] Skip it all!\n",__func__);
+	return 0;
 	u32 i, macaddrlow, macaddrhigh;
 	struct eth_pdata *pdata = dev_get_plat(dev);
 	struct zynq_gem_priv *priv = dev_get_priv(dev);
@@ -801,7 +803,7 @@ static int zynq_gem_probe(struct udevice *dev)
 
 	printf("\nZYNQ GEM INTERFACE: %s\n", phy_string_for_interface(priv->interface));
 	goto err0;
-	
+
 	// HIT 1
 	printf("[%s]  1\n",__func__);
 	// SKIPPED
