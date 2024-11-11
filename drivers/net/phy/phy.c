@@ -1001,6 +1001,7 @@ struct phy_device *fixed_phy_create(ofnode node)
 static struct phy_device *phy_connect_fixed(struct mii_dev *bus,
 					    struct udevice *dev)
 {
+	printf("[%s] ENTRY\n",__func__);
 	ofnode node = dev_ofnode(dev), subnode;
 	struct phy_device *phydev = NULL;
 
@@ -1024,6 +1025,7 @@ struct phy_device *phy_connect(struct mii_dev *bus, int addr,
 			       phy_interface_t interface)
 #endif
 {
+	printf("[%s] ENTRY\n",__func__);
 	struct phy_device *phydev = NULL;
 	uint mask = (addr >= 0) ? (1 << addr) : 0xffffffff;
 
