@@ -40,7 +40,6 @@ typedef enum {
 	PHY_INTERFACE_MODE_NCSI,
 	PHY_INTERFACE_MODE_10GBASER,
 	PHY_INTERFACE_MODE_USXGMII,
-	PHY_INTERFACE_MODE_MOCA,
 	PHY_INTERFACE_MODE_MAX,
 } phy_interface_t;
 
@@ -72,7 +71,6 @@ static const char * const phy_interface_strings[] = {
 	[PHY_INTERFACE_MODE_NCSI]		= "NC-SI",
 	[PHY_INTERFACE_MODE_10GBASER]		= "10gbase-r",
 	[PHY_INTERFACE_MODE_USXGMII]		= "usxgmii",
-	[PHY_INTERFACE_MODE_MOCA]		= "moca",
 };
 
 /* Backplane modes:
