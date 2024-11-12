@@ -31,14 +31,19 @@ int eth_env_set_enetaddr_by_index(const char *base_name, int index,
 
 void eth_common_init(void)
 {
+	printf("[%s] ENTRY\n",__func__);
 	bootstage_mark(BOOTSTAGE_ID_NET_ETH_START);
 #if CONFIG_IS_ENABLED(ETH)
 #if defined(CONFIG_MII) || defined(CONFIG_CMD_MII) || defined(CONFIG_PHYLIB)
+	printf("[%s] 1\n",__func__);
 	miiphy_init();
+	printf("[%s] 2\n",__func__);
 #endif
 
 #ifdef CONFIG_PHYLIB
+	printf("[%s] 3\n",__func__);
 	phy_init();
+	printf("[%s] 4\n",__func__);
 #endif
 #endif
 }

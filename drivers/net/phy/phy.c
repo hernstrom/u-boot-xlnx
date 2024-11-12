@@ -465,6 +465,7 @@ static struct phy_driver genphy_driver = {
 
 static int genphy_init(void)
 {
+	printf("[%s] ENTRY\n",__func__);
 	return phy_register(&genphy_driver);
 }
 
@@ -472,6 +473,7 @@ static LIST_HEAD(phy_drivers);
 
 int phy_init(void)
 {
+	printf("[%s] ENTRY\n",__func__);
 #ifdef CONFIG_NEEDS_MANUAL_RELOC
 	/*
 	 * The pointers inside phy_drivers also needs to be updated incase of
@@ -578,6 +580,7 @@ int phy_init(void)
 
 int phy_register(struct phy_driver *drv)
 {
+	printf("[%s] ENTRY\n",__func__);
 	INIT_LIST_HEAD(&drv->list);
 	list_add_tail(&drv->list, &phy_drivers);
 
