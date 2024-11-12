@@ -1591,6 +1591,7 @@ ofnode ofnode_get_phy_node(ofnode node)
 
 phy_interface_t ofnode_read_phy_mode(ofnode node)
 {
+	printf("[%s] ENTRY\n",__func__);
 	const char *mode;
 	int i;
 

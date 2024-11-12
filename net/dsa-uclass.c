@@ -464,6 +464,7 @@ static int dsa_post_bind(struct udevice *dev)
  */
 static int dsa_pre_probe(struct udevice *dev)
 {
+	printf("[%s] ENTRY\n",__func__);
 	struct dsa_pdata *pdata = dev_get_uclass_plat(dev);
 	struct dsa_priv *priv = dev_get_uclass_priv(dev);
 	struct dsa_ops *ops = dsa_get_ops(dev);

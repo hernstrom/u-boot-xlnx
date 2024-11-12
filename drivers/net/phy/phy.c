@@ -670,6 +670,7 @@ static struct phy_driver *get_phy_driver(struct phy_device *phydev)
 struct phy_device *phy_device_create(struct mii_dev *bus, int addr,
 				     u32 phy_id, bool is_c45)
 {
+	printf("[%s] ENTRY\n",__func__);
 	struct phy_device *dev;
 
 	/*
@@ -981,6 +982,7 @@ static struct phy_device *phy_connect_gmii2rgmii(struct mii_dev *bus,
  */
 struct phy_device *fixed_phy_create(ofnode node)
 {
+	printf("[%s] ENTRY\n",__func__);
 	struct phy_device *phydev;
 	ofnode subnode;
 
