@@ -795,6 +795,8 @@ static int gem_zynqmp_set_dynamic_config(struct udevice *dev)
 static int zynq_gem_probe(struct udevice *dev)
 {
 	printf("[%s] ENTRY\n",__func__);
+	printf("[%s] skip\n",__func__);
+	return 0;
 	void *bd_space;
 	struct zynq_gem_priv *priv = dev_get_priv(dev);
 	struct zynq_gem_regs *regs = priv->iobase;
