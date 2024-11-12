@@ -294,6 +294,8 @@ static int phywrite(struct zynq_gem_priv *priv, u32 phy_addr,
 static int zynq_gem_setup_mac(struct udevice *dev)
 {
 	printf("[%s] ENTRY\n",__func__);
+	printf("[%s] Skip it all!\n",__func__);
+	return 0;
 	u32 i, macaddrlow, macaddrhigh;
 	struct eth_pdata *pdata = dev_get_plat(dev);
 	struct zynq_gem_priv *priv = dev_get_priv(dev);
@@ -800,6 +802,7 @@ static int zynq_gem_probe(struct udevice *dev)
 	struct phy phy;
 
 	printf("\nZYNQ GEM INTERFACE: %s\n", phy_string_for_interface(priv->interface));
+	goto err0;
 
 	// HIT 1
 	printf("[%s]  1\n",__func__);
@@ -850,6 +853,7 @@ static int zynq_gem_probe(struct udevice *dev)
 		goto err1;
 	}
 
+	goto err1;
 	mmu_set_region_dcache_behaviour((phys_addr_t)bd_space,
 					BD_SPACE, DCACHE_OFF);
 
@@ -890,20 +894,20 @@ static int zynq_gem_probe(struct udevice *dev)
 		priv->bus = eth_phy_get_mdio_bus(dev);
 	}
 
-	printf("[%s] 21\n",__func__);
-	if (!priv->bus) {
-		printf("[%s] 22\n",__func__);
-		priv->bus = mdio_alloc();
-		priv->bus->read = zynq_gem_miiphy_read;
-		priv->bus->write = zynq_gem_miiphy_write;
-		priv->bus->priv = priv;
+	//printf("[%s] 21\n",__func__);
+	//if (!priv->bus) {
+	//	printf("[%s] 22\n",__func__);
+	//	priv->bus = mdio_alloc();
+	//	priv->bus->read = zynq_gem_miiphy_read;
+	//	priv->bus->write = zynq_gem_miiphy_write;
+	//	priv->bus->priv = priv;
 
-		ret = mdio_register_seq(priv->bus, dev_seq(dev));
-		if (ret) {
-			printf("[%s] 23\n",__func__);
-			goto err2;
-		}
-	}
+	//	ret = mdio_register_seq(priv->bus, dev_seq(dev));
+	//	if (ret) {
+	//		printf("[%s] 23\n",__func__);
+	//		goto err2;
+	//	}
+	//}
 
 	printf("[%s] 24\n",__func__);
 	if (IS_ENABLED(CONFIG_DM_ETH_PHY)) {
@@ -911,15 +915,15 @@ static int zynq_gem_probe(struct udevice *dev)
 		eth_phy_set_mdio_bus(dev, priv->bus);
 	}
 
-	printf("[%s] 26\n",__func__);
-	val = gem_mdc_clk_div(priv);
-	if (val) {
-		printf("[%s] 27\n",__func__);
-		writel(val, &regs->nwcfg);
-	}
+	//printf("[%s] 26\n",__func__);
+	//val = gem_mdc_clk_div(priv);
+	//if (val) {
+	//	printf("[%s] 27\n",__func__);
+	//	writel(val, &regs->nwcfg);
+	//}
 
-	printf("[%s] 28\n",__func__);
-	ret = zynq_phy_init(dev);
+	//printf("[%s] 28\n",__func__);
+	//ret = zynq_phy_init(dev);
 	if (ret) {
 		printf("[%s] 29\n",__func__);
 		goto err3;
@@ -967,6 +971,7 @@ err2:
 err1:
 	free(priv->rxbuffers);
 
+err0:
 	printf("\n(before ret) ZYNQ GEM: %lx, mdio bus %lx, phyaddr %d, interface %s\n",
 	       (ulong)priv->iobase, (ulong)priv->mdiobase, priv->phydev->addr,
 	       phy_string_for_interface(priv->interface));
@@ -998,6 +1003,8 @@ static const struct eth_ops zynq_gem_ops = {
 static int zynq_gem_of_to_plat(struct udevice *dev)
 {
 	printf("[%s] ENTRY\n",__func__);
+	printf("[%s] SKIPPING!\n",__func__);
+	return 0;
 	struct eth_pdata *pdata = dev_get_plat(dev);
 	struct zynq_gem_priv *priv = dev_get_priv(dev);
 	struct ofnode_phandle_args phandle_args;
