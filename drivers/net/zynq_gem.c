@@ -1023,7 +1023,7 @@ static int zynq_gem_of_to_plat(struct udevice *dev)
 		fdt_addr_t addr;
 		ofnode parent;
 
-		debug("phy-handle does exist %s\n", dev->name);
+		printf("phy-handle does exist %s\n", dev->name);
 		if (!(IS_ENABLED(CONFIG_DM_ETH_PHY)))
 			priv->phyaddr = ofnode_read_u32_default
 					(phandle_args.node, "reg", -1);
@@ -1039,7 +1039,7 @@ static int zynq_gem_of_to_plat(struct udevice *dev)
 
 		addr = ofnode_get_addr(parent);
 		if (addr != FDT_ADDR_T_NONE) {
-			debug("MDIO bus not found %s\n", dev->name);
+			printf("MDIO bus not found %s\n", dev->name);
 			priv->mdiobase = (struct zynq_gem_regs *)addr;
 		}
 	}
@@ -1047,14 +1047,16 @@ static int zynq_gem_of_to_plat(struct udevice *dev)
 	printf("[%s] 1\n",__func__);
 	pdata->phy_interface = dev_read_phy_mode(dev);
 	printf("[%s] 2\n",__func__);
-	if (pdata->phy_interface == PHY_INTERFACE_MODE_NA)
-		return -EINVAL;
+	//if (pdata->phy_interface == PHY_INTERFACE_MODE_NA)
+	//	return -EINVAL;
 	printf("[%s] 3\n",__func__);
 	priv->interface = pdata->phy_interface;
 
 	priv->int_pcs = dev_read_bool(dev, "is-internal-pcspma");
+	printf("[%s] priv->int_pcs: %d\n", __func__, priv->int_pcs);
 
 	priv->clk_en_info = dev_get_driver_data(dev);
+	printf("[%s] priv->clk_en_info: 0x%x\n", __func__, priv->clk_en_info);
 
 	return 0;
 }
