@@ -219,7 +219,7 @@ int ofnode_read_u8(ofnode node, const char *propname, u8 *outp)
 	int len;
 
 	assert(ofnode_valid(node));
-	printf("%s: %s: ", __func__, propname);
+	debug("%s: %s: ", __func__, propname);
 
 	if (ofnode_is_np(node))
 		return of_read_u8(ofnode_to_np(node), propname, outp);
@@ -227,11 +227,11 @@ int ofnode_read_u8(ofnode node, const char *propname, u8 *outp)
 	cell = fdt_getprop(gd->fdt_blob, ofnode_to_offset(node), propname,
 			   &len);
 	if (!cell || len < sizeof(*cell)) {
-		printf("(not found)\n");
+		debug("(not found)\n");
 		return -EINVAL;
 	}
 	*outp = *cell;
-	printf("%#x (%d)\n", *outp, *outp);
+	debug("%#x (%d)\n", *outp, *outp);
 
 	return 0;
 }
@@ -250,7 +250,7 @@ int ofnode_read_u16(ofnode node, const char *propname, u16 *outp)
 	int len;
 
 	assert(ofnode_valid(node));
-	printf("%s: %s: ", __func__, propname);
+	debug("%s: %s: ", __func__, propname);
 
 	if (ofnode_is_np(node))
 		return of_read_u16(ofnode_to_np(node), propname, outp);
@@ -258,11 +258,11 @@ int ofnode_read_u16(ofnode node, const char *propname, u16 *outp)
 	cell = fdt_getprop(gd->fdt_blob, ofnode_to_offset(node), propname,
 			   &len);
 	if (!cell || len < sizeof(*cell)) {
-		printf("(not found)\n");
+		debug("(not found)\n");
 		return -EINVAL;
 	}
 	*outp = be16_to_cpup(cell);
-	printf("%#x (%d)\n", *outp, *outp);
+	debug("%#x (%d)\n", *outp, *outp);
 
 	return 0;
 }
@@ -295,7 +295,7 @@ int ofnode_read_u32_index(ofnode node, const char *propname, int index,
 	int len;
 
 	assert(ofnode_valid(node));
-	printf("%s: %s: ", __func__, propname);
+	debug("%s: %s: ", __func__, propname);
 
 	if (ofnode_is_np(node))
 		return of_read_u32_index(ofnode_to_np(node), propname, index,
@@ -304,17 +304,17 @@ int ofnode_read_u32_index(ofnode node, const char *propname, int index,
 	cell = fdt_getprop(ofnode_to_fdt(node), ofnode_to_offset(node),
 			   propname, &len);
 	if (!cell) {
-		printf("(not found)\n");
+		debug("(not found)\n");
 		return -EINVAL;
 	}
 
 	if (len < (sizeof(int) * (index + 1))) {
-		printf("(not large enough)\n");
+		debug("(not large enough)\n");
 		return -EOVERFLOW;
 	}
 
 	*outp = fdt32_to_cpu(cell[index]);
-	printf("%#x (%d)\n", *outp, *outp);
+	debug("%#x (%d)\n", *outp, *outp);
 
 	return 0;
 }
@@ -334,17 +334,17 @@ int ofnode_read_u64_index(ofnode node, const char *propname, int index,
 	cell = fdt_getprop(ofnode_to_fdt(node), ofnode_to_offset(node),
 			   propname, &len);
 	if (!cell) {
-		printf("(not found)\n");
+		debug("(not found)\n");
 		return -EINVAL;
 	}
 
 	if (len < (sizeof(int) * (index + 1))) {
-		printf("(not large enough)\n");
+		debug("(not large enough)\n");
 		return -EOVERFLOW;
 	}
 
 	*outp = fdt64_to_cpu(cell[index]);
-	printf("%#llx (%lld)\n", *outp, *outp);
+	debug("%#llx (%lld)\n", *outp, *outp);
 
 	return 0;
 }
@@ -372,7 +372,7 @@ int ofnode_read_u64(ofnode node, const char *propname, u64 *outp)
 	int len;
 
 	assert(ofnode_valid(node));
-	printf("%s: %s: ", __func__, propname);
+	debug("%s: %s: ", __func__, propname);
 
 	if (ofnode_is_np(node))
 		return of_read_u64(ofnode_to_np(node), propname, outp);
@@ -380,11 +380,11 @@ int ofnode_read_u64(ofnode node, const char *propname, u64 *outp)
 	cell = fdt_getprop(ofnode_to_fdt(node), ofnode_to_offset(node),
 			   propname, &len);
 	if (!cell || len < sizeof(*cell)) {
-		printf("(not found)\n");
+		debug("(not found)\n");
 		return -EINVAL;
 	}
 	*outp = fdt64_to_cpu(cell[0]);
-	printf("%#llx (%lld)\n", (unsigned long long)*outp,
+	debug("%#llx (%lld)\n", (unsigned long long)*outp,
 	      (unsigned long long)*outp);
 
 	return 0;
@@ -403,11 +403,11 @@ bool ofnode_read_bool(ofnode node, const char *propname)
 	const void *prop;
 
 	assert(ofnode_valid(node));
-	printf("%s: %s: ", __func__, propname);
+	debug("%s: %s: ", __func__, propname);
 
 	prop = ofnode_get_property(node, propname, NULL);
 
-	printf("%s\n", prop ? "true" : "false");
+	debug("%s\n", prop ? "true" : "false");
 
 	return prop ? true : false;
 }
@@ -418,7 +418,7 @@ const void *ofnode_read_prop(ofnode node, const char *propname, int *sizep)
 	int len;
 
 	assert(ofnode_valid(node));
-	printf("%s: %s: ", __func__, propname);
+	debug("%s: %s: ", __func__, propname);
 
 	if (ofnode_is_np(node)) {
 		struct property *prop = of_find_property(
@@ -433,7 +433,7 @@ const void *ofnode_read_prop(ofnode node, const char *propname, int *sizep)
 				  propname, &len);
 	}
 	if (!val) {
-		printf("<not found>\n");
+		debug("<not found>\n");
 		if (sizep)
 			*sizep = -FDT_ERR_NOTFOUND;
 		return NULL;
@@ -454,10 +454,10 @@ const char *ofnode_read_string(ofnode node, const char *propname)
 		return NULL;
 
 	if (strnlen(str, len) >= len) {
-		printf("<invalid>\n");
+		debug("<invalid>\n");
 		return NULL;
 	}
-	printf("%s\n", str);
+	debug("%s\n", str);
 
 	return str;
 }
@@ -477,7 +477,7 @@ ofnode ofnode_find_subnode(ofnode node, const char *subnode_name)
 	ofnode subnode;
 
 	assert(ofnode_valid(node));
-	printf("%s: %s: ", __func__, subnode_name);
+	debug("%s: %s: ", __func__, subnode_name);
 
 	if (ofnode_is_np(node)) {
 		struct device_node *np = ofnode_to_np(node);
@@ -492,7 +492,7 @@ ofnode ofnode_find_subnode(ofnode node, const char *subnode_name)
 				ofnode_to_offset(node), subnode_name);
 		subnode = noffset_to_ofnode(node, ooffset);
 	}
-	printf("%s\n", ofnode_valid(subnode) ?
+	debug("%s\n", ofnode_valid(subnode) ?
 	      ofnode_get_name(subnode) : "<none>");
 
 	return subnode;
@@ -502,7 +502,7 @@ int ofnode_read_u32_array(ofnode node, const char *propname,
 			  u32 *out_values, size_t sz)
 {
 	assert(ofnode_valid(node));
-	printf("%s: %s: ", __func__, propname);
+	debug("%s: %s: ", __func__, propname);
 
 	if (ofnode_is_np(node)) {
 		return of_read_u32_array(ofnode_to_np(node), propname,
@@ -574,7 +574,7 @@ ofnode ofnode_get_parent(ofnode node)
 const char *ofnode_get_name(ofnode node)
 {
 	if (!ofnode_valid(node)) {
-		printf("%s node not valid\n", __func__);
+		debug("%s node not valid\n", __func__);
 		return NULL;
 	}
 
@@ -917,7 +917,7 @@ ofnode ofnode_get_aliases_node(const char *name)
 	if (!prop)
 		return ofnode_null();
 
-	printf("%s: node_path: %s\n", __func__, prop);
+	debug("%s: node_path: %s\n", __func__, prop);
 
 	return ofnode_path(prop);
 }
@@ -940,7 +940,7 @@ static int decode_timing_property(ofnode node, const char *name,
 
 	length = ofnode_read_size(node, name);
 	if (length < 0) {
-		printf("%s: could not find property %s\n",
+		debug("%s: could not find property %s\n",
 		      ofnode_get_name(node), name);
 		return length;
 	}
@@ -1130,7 +1130,7 @@ int ofnode_read_pci_addr(ofnode node, enum fdt_pci_space type,
 	int len;
 	int ret = -ENOENT;
 
-	printf("%s: %s: ", __func__, propname);
+	debug("%s: %s: ", __func__, propname);
 
 	/*
 	 * If we follow the pci bus bindings strictly, we should check
@@ -1147,7 +1147,7 @@ int ofnode_read_pci_addr(ofnode node, enum fdt_pci_space type,
 		int i;
 
 		for (i = 0; i < num; i++) {
-			printf("pci address #%d: %08lx %08lx %08lx\n", i,
+			debug("pci address #%d: %08lx %08lx %08lx\n", i,
 			      (ulong)fdt32_to_cpu(cell[0]),
 			      (ulong)fdt32_to_cpu(cell[1]),
 			      (ulong)fdt32_to_cpu(cell[2]));
@@ -1173,7 +1173,7 @@ int ofnode_read_pci_addr(ofnode node, enum fdt_pci_space type,
 	ret = -EINVAL;
 
 fail:
-	printf("(not found)\n");
+	debug("(not found)\n");
 	return ret;
 }
 
@@ -1445,7 +1445,7 @@ int ofnode_write_string(ofnode node, const char *propname, const char *value)
 {
 	assert(ofnode_valid(node));
 
-	printf("%s: %s = %s", __func__, propname, value);
+	debug("%s: %s = %s", __func__, propname, value);
 
 	return ofnode_write_prop(node, propname, value, strlen(value) + 1,
 				 false);
@@ -1519,7 +1519,7 @@ int ofnode_read_bootscript_address(u64 *bootscr_address, u64 *bootscr_offset)
 
 	uboot = ofnode_path("/options/u-boot");
 	if (!ofnode_valid(uboot)) {
-		printf("%s: Missing /u-boot node\n", __func__);
+		debug("%s: Missing /u-boot node\n", __func__);
 		return -EINVAL;
 	}
 
@@ -1545,7 +1545,7 @@ int ofnode_read_bootscript_flash(u64 *bootscr_flash_offset,
 
 	uboot = ofnode_path("/options/u-boot");
 	if (!ofnode_valid(uboot)) {
-		printf("%s: Missing /u-boot node\n", __func__);
+		debug("%s: Missing /u-boot node\n", __func__);
 		return -EINVAL;
 	}
 
@@ -1560,7 +1560,7 @@ int ofnode_read_bootscript_flash(u64 *bootscr_flash_offset,
 		return -EINVAL;
 
 	if (!bootscr_flash_size) {
-		printf("bootscr-flash-size is zero. Ignoring properties!\n");
+		debug("bootscr-flash-size is zero. Ignoring properties!\n");
 		*bootscr_flash_offset = 0;
 		return -EINVAL;
 	}

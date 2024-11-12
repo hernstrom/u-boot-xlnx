@@ -1044,9 +1044,12 @@ static int zynq_gem_of_to_plat(struct udevice *dev)
 		}
 	}
 
+	printf("[%s] 1\n",__func__);
 	pdata->phy_interface = dev_read_phy_mode(dev);
+	printf("[%s] 2\n",__func__);
 	if (pdata->phy_interface == PHY_INTERFACE_MODE_NA)
 		return -EINVAL;
+	printf("[%s] 3\n",__func__);
 	priv->interface = pdata->phy_interface;
 
 	priv->int_pcs = dev_read_bool(dev, "is-internal-pcspma");

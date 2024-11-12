@@ -212,6 +212,7 @@ out:
 /* Connect to a PHY linked in eth DT node */
 struct phy_device *dm_eth_phy_connect(struct udevice *ethdev)
 {
+	printf("[%s] ENTRY\n",__func__);
 	phy_interface_t interface;
 	struct phy_device *phy;
 
