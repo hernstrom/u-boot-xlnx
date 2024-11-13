@@ -465,6 +465,7 @@ static struct phy_driver genphy_driver = {
 
 static int genphy_init(void)
 {
+	printf("[%s] ENTRY\n",__func__);
 	return phy_register(&genphy_driver);
 }
 
@@ -472,6 +473,7 @@ static LIST_HEAD(phy_drivers);
 
 int phy_init(void)
 {
+	printf("[%s] ENTRY\n",__func__);
 #ifdef CONFIG_NEEDS_MANUAL_RELOC
 	/*
 	 * The pointers inside phy_drivers also needs to be updated incase of
@@ -578,6 +580,7 @@ int phy_init(void)
 
 int phy_register(struct phy_driver *drv)
 {
+	printf("[%s] ENTRY\n",__func__);
 	INIT_LIST_HEAD(&drv->list);
 	list_add_tail(&drv->list, &phy_drivers);
 
@@ -670,6 +673,7 @@ static struct phy_driver *get_phy_driver(struct phy_device *phydev)
 struct phy_device *phy_device_create(struct mii_dev *bus, int addr,
 				     u32 phy_id, bool is_c45)
 {
+	printf("[%s] ENTRY\n",__func__);
 	struct phy_device *dev;
 
 	/*
@@ -981,6 +985,7 @@ static struct phy_device *phy_connect_gmii2rgmii(struct mii_dev *bus,
  */
 struct phy_device *fixed_phy_create(ofnode node)
 {
+	printf("[%s] ENTRY\n",__func__);
 	struct phy_device *phydev;
 	ofnode subnode;
 
@@ -1001,6 +1006,7 @@ struct phy_device *fixed_phy_create(ofnode node)
 static struct phy_device *phy_connect_fixed(struct mii_dev *bus,
 					    struct udevice *dev)
 {
+	printf("[%s] ENTRY\n",__func__);
 	ofnode node = dev_ofnode(dev), subnode;
 	struct phy_device *phydev = NULL;
 
@@ -1024,6 +1030,7 @@ struct phy_device *phy_connect(struct mii_dev *bus, int addr,
 			       phy_interface_t interface)
 #endif
 {
+	printf("[%s] ENTRY\n",__func__);
 	struct phy_device *phydev = NULL;
 	uint mask = (addr >= 0) ? (1 << addr) : 0xffffffff;
 

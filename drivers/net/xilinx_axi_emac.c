@@ -197,6 +197,7 @@ struct xxv_axi_regs {
 
 static inline int mdio_wait(struct axi_regs *regs)
 {
+	printf("[%s] ENTRY\n",__func__);
 	u32 timeout = 200;
 
 	/* Wait till MDIO interface is ready to accept a new transaction. */
@@ -221,6 +222,7 @@ static inline int mdio_wait(struct axi_regs *regs)
  */
 static inline void axienet_dma_write(struct axidma_bd *bd, u32 *desc)
 {
+	printf("[%s] ENTRY\n",__func__);
 #if defined(CONFIG_PHYS_64BIT)
 	writeq((unsigned long)bd, desc);
 #else
@@ -231,6 +233,7 @@ static inline void axienet_dma_write(struct axidma_bd *bd, u32 *desc)
 static u32 phyread(struct axidma_priv *priv, u32 phyaddress, u32 registernum,
 		   u16 *val)
 {
+	printf("[%s] ENTRY\n",__func__);
 	struct axi_regs *regs = priv->iobase;
 	u32 mdioctrlreg = 0;
 
@@ -257,6 +260,7 @@ static u32 phyread(struct axidma_priv *priv, u32 phyaddress, u32 registernum,
 static u32 phywrite(struct axidma_priv *priv, u32 phyaddress, u32 registernum,
 		    u32 data)
 {
+	printf("[%s] ENTRY\n",__func__);
 	struct axi_regs *regs = priv->iobase;
 	u32 mdioctrlreg = 0;
 
@@ -283,6 +287,7 @@ static u32 phywrite(struct axidma_priv *priv, u32 phyaddress, u32 registernum,
 
 static int axiemac_phy_init(struct udevice *dev)
 {
+	printf("[%s] ENTRY\n",__func__);
 	u16 phyreg;
 	int i;
 	u32 ret;
@@ -344,6 +349,7 @@ static int axiemac_phy_init(struct udevice *dev)
 
 static int pcs_pma_startup(struct axidma_priv *priv)
 {
+	printf("[%s] ENTRY\n",__func__);
 	u32 rc, retry_cnt = 0;
 	u16 mii_reg;
 
@@ -384,6 +390,7 @@ failed_mdio:
 /* Setting axi emac and phy to proper setting */
 static int setup_phy(struct udevice *dev)
 {
+	printf("[%s] ENTRY\n",__func__);
 	u16 temp;
 	u32 speed, emmc_reg, ret;
 	struct axidma_priv *priv = dev_get_priv(dev);
@@ -457,6 +464,7 @@ static int setup_phy(struct udevice *dev)
 /* STOP DMA transfers */
 static void axiemac_stop(struct udevice *dev)
 {
+	printf("[%s] ENTRY\n",__func__);
 	struct axidma_priv *priv = dev_get_priv(dev);
 	u32 temp;
 
@@ -486,6 +494,7 @@ static int xxv_axi_ethernet_init(struct axidma_priv *priv)
 
 static int axi_ethernet_init(struct axidma_priv *priv)
 {
+	printf("[%s] ENTRY\n",__func__);
 	struct axi_regs *regs = priv->iobase;
 	int err;
 
@@ -535,6 +544,7 @@ static int axi_ethernet_init(struct axidma_priv *priv)
 
 static int axiemac_write_hwaddr(struct udevice *dev)
 {
+	printf("[%s] ENTRY\n",__func__);
 	struct eth_pdata *pdata = dev_get_plat(dev);
 	struct axidma_priv *priv = dev_get_priv(dev);
 	struct axi_regs *regs = priv->iobase;
@@ -556,6 +566,7 @@ static int axiemac_write_hwaddr(struct udevice *dev)
 /* Reset DMA engine */
 static void axi_dma_init(struct axidma_priv *priv)
 {
+	printf("[%s] ENTRY\n",__func__);
 	u32 timeout = 500;
 
 	/* Reset the engine so the hardware starts from a known state */
@@ -578,6 +589,7 @@ static void axi_dma_init(struct axidma_priv *priv)
 
 static int axiemac_start(struct udevice *dev)
 {
+	printf("[%s] ENTRY\n",__func__);
 	struct axidma_priv *priv = dev_get_priv(dev);
 	u32 temp;
 
@@ -658,6 +670,7 @@ static int axiemac_start(struct udevice *dev)
 
 static int axiemac_send(struct udevice *dev, void *ptr, int len)
 {
+	printf("[%s] ENTRY\n",__func__);
 	struct axidma_priv *priv = dev_get_priv(dev);
 	u32 timeout;
 
@@ -722,6 +735,7 @@ static int axiemac_send(struct udevice *dev, void *ptr, int len)
 
 static int isrxready(struct axidma_priv *priv)
 {
+	printf("[%s] ENTRY\n",__func__);
 	u32 status;
 
 	/* Read pending interrupts */
@@ -742,6 +756,7 @@ static int isrxready(struct axidma_priv *priv)
 
 static int axiemac_recv(struct udevice *dev, int flags, uchar **packetp)
 {
+	printf("[%s] ENTRY\n",__func__);
 	u32 length;
 	struct axidma_priv *priv = dev_get_priv(dev);
 	u32 temp;
@@ -771,6 +786,7 @@ static int axiemac_recv(struct udevice *dev, int flags, uchar **packetp)
 
 static int axiemac_free_pkt(struct udevice *dev, uchar *packet, int length)
 {
+	printf("[%s] ENTRY\n",__func__);
 	struct axidma_priv *priv = dev_get_priv(dev);
 
 #ifdef DEBUG
@@ -806,6 +822,7 @@ static int axiemac_free_pkt(struct udevice *dev, uchar *packet, int length)
 static int axiemac_miiphy_read(struct mii_dev *bus, int addr,
 			       int devad, int reg)
 {
+	printf("[%s] ENTRY\n",__func__);
 	int ret;
 	u16 value;
 
@@ -818,12 +835,14 @@ static int axiemac_miiphy_read(struct mii_dev *bus, int addr,
 static int axiemac_miiphy_write(struct mii_dev *bus, int addr, int devad,
 				int reg, u16 value)
 {
+	printf("[%s] ENTRY\n",__func__);
 	debug("axiemac: Write MII 0x%x, 0x%x, 0x%x\n", addr, reg, value);
 	return phywrite(bus->priv, addr, reg, value);
 }
 
 static int axi_emac_probe(struct udevice *dev)
 {
+	printf("[%s] ENTRY\n",__func__);
 	struct axidma_plat *plat = dev_get_plat(dev);
 	struct eth_pdata *pdata = &plat->eth_pdata;
 	struct axidma_priv *priv = dev_get_priv(dev);
@@ -870,6 +889,7 @@ static int axi_emac_probe(struct udevice *dev)
 
 static int axi_emac_remove(struct udevice *dev)
 {
+	printf("[%s] ENTRY\n",__func__);
 	struct axidma_priv *priv = dev_get_priv(dev);
 
 	if (priv->mactype == EMAC_1G) {
@@ -892,6 +912,7 @@ static const struct eth_ops axi_emac_ops = {
 
 static int axi_emac_of_to_plat(struct udevice *dev)
 {
+	printf("[%s] ENTRY\n",__func__);
 	struct axidma_plat *plat = dev_get_plat(dev);
 	struct eth_pdata *pdata = &plat->eth_pdata;
 	int node = dev_of_offset(dev);

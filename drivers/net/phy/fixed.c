@@ -106,6 +106,7 @@ static struct phy_driver fixedphy_driver = {
 
 int phy_fixed_init(void)
 {
+	printf("[%s] ENTRY\n",__func__);
 	phy_register(&fixedphy_driver);
 	return 0;
 }

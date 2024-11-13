@@ -22,12 +22,14 @@ struct zynqmp_reset_priv {
 static int zynqmp_pm_reset_assert(const u32 reset,
 				  const enum zynqmp_pm_reset_action assert_flag)
 {
+	printf("[%s] ENTRY\n",__func__);
 	return xilinx_pm_request(PM_RESET_ASSERT, reset, assert_flag, 0, 0,
 				 NULL);
 }
 
 static int zynqmp_reset_assert(struct reset_ctl *rst)
 {
+	printf("[%s] ENTRY\n",__func__);
 	struct zynqmp_reset_priv *priv = dev_get_priv(rst->dev);
 
 	dev_dbg(rst->dev, "%s(rst=%p) (id=%lu)\n", __func__, rst, rst->id);
@@ -38,6 +40,7 @@ static int zynqmp_reset_assert(struct reset_ctl *rst)
 
 static int zynqmp_reset_deassert(struct reset_ctl *rst)
 {
+	printf("[%s] ENTRY\n",__func__);
 	struct zynqmp_reset_priv *priv = dev_get_priv(rst->dev);
 
 	dev_dbg(rst->dev, "%s(rst=%p) (id=%lu)\n", __func__, rst, rst->id);
@@ -48,6 +51,7 @@ static int zynqmp_reset_deassert(struct reset_ctl *rst)
 
 static int zynqmp_reset_request(struct reset_ctl *rst)
 {
+	printf("[%s] ENTRY\n",__func__);
 	struct zynqmp_reset_priv *priv = dev_get_priv(rst->dev);
 
 	dev_dbg(rst->dev, "%s(rst=%p) (id=%lu) (nr_reset=%d)\n", __func__,
@@ -61,6 +65,7 @@ static int zynqmp_reset_request(struct reset_ctl *rst)
 
 static int zynqmp_reset_probe(struct udevice *dev)
 {
+	printf("[%s] ENTRY\n",__func__);
 	struct zynqmp_reset_priv *priv = dev_get_priv(dev);
 
 	if (device_is_compatible(dev, "xlnx,zynqmp-reset")) {

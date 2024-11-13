@@ -420,11 +420,14 @@ int eth_rx(void)
 
 int eth_initialize(void)
 {
+	printf("[%s] ENTRY\n",__func__);
 	int num_devices = 0;
 	struct udevice *dev;
 
+	printf("[%s] 1\n",__func__);
 	eth_common_init();
 
+	printf("[%s] 2\n",__func__);
 	/*
 	 * Devices need to write the hwaddr even if not started so that Linux
 	 * will have access to the hwaddr that u-boot stored for the device.
@@ -433,9 +436,11 @@ int eth_initialize(void)
 	 */
 	uclass_first_device_check(UCLASS_ETH, &dev);
 	if (!dev) {
+		printf("[%s] 3\n",__func__);
 		log_err("No ethernet found.\n");
 		bootstage_error(BOOTSTAGE_ID_NET_ETH_START);
 	} else {
+		printf("[%s] 4\n",__func__);
 		char *ethprime = env_get("ethprime");
 		struct udevice *prime_dev = NULL;
 
@@ -448,8 +453,10 @@ int eth_initialize(void)
 			eth_set_dev(NULL);
 		}
 
+		printf("[%s] 5\n",__func__);
 		bootstage_mark(BOOTSTAGE_ID_NET_ETH_INIT);
 		do {
+			printf("[%s] 6\n",__func__);
 			if (device_active(dev)) {
 				if (num_devices)
 					printf(", ");

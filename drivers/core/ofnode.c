@@ -1591,6 +1591,7 @@ ofnode ofnode_get_phy_node(ofnode node)
 
 phy_interface_t ofnode_read_phy_mode(ofnode node)
 {
+	printf("[%s] ENTRY\n",__func__);
 	const char *mode;
 	int i;
 
@@ -1607,7 +1608,7 @@ phy_interface_t ofnode_read_phy_mode(ofnode node)
 		if (!strcmp(mode, phy_interface_strings[i]))
 			return i;
 
-	debug("%s: Invalid PHY interface '%s'\n", __func__, mode);
+	printf("%s: Invalid PHY interface '%s'\n", __func__, mode);
 
 	return PHY_INTERFACE_MODE_NA;
 }

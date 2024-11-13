@@ -427,5 +427,6 @@ ofnode dev_get_phy_node(const struct udevice *dev)
 
 phy_interface_t dev_read_phy_mode(const struct udevice *dev)
 {
+	printf("[%s] ENTRY\n",__func__);
 	return ofnode_read_phy_mode(dev_ofnode(dev));
 }

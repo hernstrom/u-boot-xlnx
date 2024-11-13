@@ -17,12 +17,14 @@
 static int zynqmp_pm_request_node(const u32 node, const u32 capabilities,
 				  const u32 qos, const enum zynqmp_pm_request_ack ack)
 {
+	printf("[%s] ENTRY\n",__func__);
 	return xilinx_pm_request(PM_REQUEST_NODE, node, capabilities,
 				   qos, ack, NULL);
 }
 
 static int zynqmp_power_domain_request(struct power_domain *power_domain)
 {
+	printf("[%s] ENTRY\n",__func__);
 	dev_dbg(power_domain->dev, "Request for id: %ld\n", power_domain->id);
 
 	if (IS_ENABLED(CONFIG_ARCH_ZYNQMP))
@@ -33,12 +35,14 @@ static int zynqmp_power_domain_request(struct power_domain *power_domain)
 
 static int zynqmp_power_domain_free(struct power_domain *power_domain)
 {
+	printf("[%s] ENTRY\n",__func__);
 	/* nop now */
 	return 0;
 }
 
 static int zynqmp_power_domain_on(struct power_domain *power_domain)
 {
+	printf("[%s] ENTRY\n",__func__);
 	dev_dbg(power_domain->dev, "Domain ON for id: %ld\n", power_domain->id);
 
 	return zynqmp_pm_request_node(power_domain->id,
@@ -49,6 +53,7 @@ static int zynqmp_power_domain_on(struct power_domain *power_domain)
 
 static int zynqmp_power_domain_off(struct power_domain *power_domain)
 {
+	printf("[%s] ENTRY\n",__func__);
 	/* nop now */
 	return 0;
 }
