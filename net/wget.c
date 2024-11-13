@@ -87,6 +87,7 @@ static inline int store_block(uchar *src, unsigned int offset, unsigned int len)
  */
 static void wget_send_stored(void)
 {
+	printf("[%s] ENTRY\n",__func__);
 	u8 action = retry_action;
 	int len = retry_len;
 	unsigned int tcp_ack_num = retry_tcp_ack_num + len;
@@ -134,6 +135,7 @@ static void wget_send_stored(void)
 static void wget_send(u8 action, unsigned int tcp_ack_num,
 		      unsigned int tcp_seq_num, int len)
 {
+	printf("[%s] ENTRY\n",__func__);
 	retry_action = action;
 	retry_tcp_ack_num = tcp_ack_num;
 	retry_tcp_seq_num = tcp_seq_num;
@@ -145,6 +147,7 @@ static void wget_send(u8 action, unsigned int tcp_ack_num,
 void wget_fail(char *error_message, unsigned int tcp_seq_num,
 	       unsigned int tcp_ack_num, u8 action)
 {
+	printf("[%s] ENTRY\n",__func__);
 	printf("wget: Transfer Fail - %s\n", error_message);
 	net_set_timeout_handler(0, NULL);
 	wget_send(action, tcp_seq_num, tcp_ack_num, 0);
@@ -153,6 +156,7 @@ void wget_fail(char *error_message, unsigned int tcp_seq_num,
 void wget_success(u8 action, unsigned int tcp_seq_num,
 		  unsigned int tcp_ack_num, int len, int packets)
 {
+	printf("[%s] ENTRY\n",__func__);
 	printf("Packets received %d, Transfer Successful\n", packets);
 	wget_send(action, tcp_seq_num, tcp_ack_num, len);
 }
@@ -162,17 +166,27 @@ void wget_success(u8 action, unsigned int tcp_seq_num,
  */
 static void wget_timeout_handler(void)
 {
+	printf("[%s] ENTRY\n",__func__);
 	if (++wget_timeout_count > WGET_RETRY_COUNT) {
+		printf("[%s] 1\n",__func__);
 		puts("\nRetry count exceeded; starting again\n");
+		printf("[%s] 2\n",__func__);
 		wget_send(TCP_RST, 0, 0, 0);
+		printf("[%s] 3\n",__func__);
 		net_start_again();
+		printf("[%s] 4\n",__func__);
 	} else {
+		printf("[%s] 5\n",__func__);
 		puts("T ");
+		printf("[%s] 6\n",__func__);
 		net_set_timeout_handler(wget_timeout +
 					WGET_TIMEOUT * wget_timeout_count,
 					wget_timeout_handler);
+		printf("[%s] 7\n",__func__);
 		wget_send_stored();
+		printf("[%s] 8\n",__func__);
 	}
+	printf("[%s] 9\n",__func__);
 }
 
 #define PKT_QUEUE_OFFSET 0x20000
@@ -182,6 +196,7 @@ static void wget_connected(uchar *pkt, unsigned int tcp_seq_num,
 			   struct in_addr action_and_state,
 			   unsigned int tcp_ack_num, unsigned int len)
 {
+	printf("[%s] ENTRY\n",__func__);
 	u8 action = action_and_state.s_addr;
 	uchar *pkt_in_q;
 	char *pos;
@@ -283,6 +298,7 @@ static void wget_handler(uchar *pkt, unsigned int tcp_seq_num,
 			 struct in_addr action_and_state,
 			 unsigned int tcp_ack_num, unsigned int len)
 {
+	printf("[%s] ENTRY\n",__func__);
 	enum tcp_state wget_tcp_state = tcp_get_tcp_state();
 	u8 action = action_and_state.s_addr;
 
@@ -383,6 +399,8 @@ static unsigned int random_port(void)
 
 void wget_start(void)
 {
+	printf("[%s] ENTRY\n",__func__);
+
 	char *ep;   /* Environment pointer */
 
 	image_url = strchr(net_boot_file_name, ':');
