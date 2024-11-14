@@ -220,6 +220,7 @@ static void wget_timeout_handler(void)
 		wget_send(TCP_RST, 0, 0, 0);
 		printf("[%s] 3\n",__func__);
 		net_start_again();
+		printf("[%s] After net_start_again timeout count: %d\n",__func__, wget_timeout_count);
 		printf("[%s] 4\n",__func__);
 	} else {
 		printf("[%s] 5\n",__func__);
