@@ -225,6 +225,8 @@ static void wget_timeout_handler(void)
 		printf("[%s] 5\n",__func__);
 		puts("T ");
 		printf("[%s] 6\n",__func__);
+		printf("[%s] Timeout count: %d\n",__func__, wget_timeout_count);
+		printf("[%s] Next timeout length: %d\n",__func__, wget_timeout + WGET_TIMEOUT * wget_timeout_count);
 		net_set_timeout_handler(wget_timeout +
 					WGET_TIMEOUT * wget_timeout_count,
 					wget_timeout_handler);
