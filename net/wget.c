@@ -4,6 +4,8 @@
  * Copyright Duncan Hare <dh@synoia.com> 2017
  */
 
+#define DEBUG 1
+
 #include <asm/global_data.h>
 #include <command.h>
 #include <common.h>
@@ -555,4 +557,5 @@ void wget_start(void)
 	memset(net_server_ethaddr, 0, 6);
 
 	wget_send(TCP_SYN, 0, 0, 0);
+	printf("[%s] EXIT\n",__func__);
 }
