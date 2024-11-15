@@ -404,8 +404,7 @@ static void wget_handler(uchar *pkt, unsigned int tcp_seq_num,
 		}
 		break;
 	case WGET_TRANSFERRING:
-		printf("wget: Transferring, seq=%x, ack=%x,len=%x\n",
-			   tcp_seq_num, tcp_ack_num, len);
+		//printf("wget: Transferring, seq=%x, ack=%x,len=%x\n", tcp_seq_num, tcp_ack_num, len);
 
 		if (next_data_seq_num != tcp_seq_num) {
 			printf("wget: seq=%x packet was lost\n", next_data_seq_num);
