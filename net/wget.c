@@ -395,7 +395,10 @@ static void wget_handler(uchar *pkt, unsigned int tcp_seq_num,
 	case WGET_CONNECTED:
 		printf("wget: Connected seq=%x, len=%x\n",
 			   tcp_seq_num, len);
+		// DEBUG - force failing state
+		len=0;
 		if (!len) {
+			//net_set_state(NETLOOP_FAIL);
 			wget_fail("Image not found, no data returned\n",
 				  tcp_seq_num, tcp_ack_num, action);
 		} else {
