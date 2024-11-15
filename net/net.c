@@ -407,7 +407,7 @@ int net_init(void)
 			tcp_set_tcp_state(TCP_CLOSED);
 	}
 	
-	printf("[%s] EXIT (callnig net_init_loop)\n",__func__);
+	printf("[%s] EXIT (calling net_init_loop)\n",__func__);
 	return net_init_loop();
 }
 
