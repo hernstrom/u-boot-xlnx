@@ -345,6 +345,7 @@ void net_auto_load(void)
 
 static int net_init_loop(void)
 {
+	printf("[%s] ENTRY\n",__func__);
 	if (eth_get_dev()) {
 		memcpy(net_ethaddr, eth_get_ethaddr(), 6);
 
@@ -381,6 +382,7 @@ static void net_cleanup_loop(void)
 
 int net_init(void)
 {
+	printf("[%s] ENTRY\n",__func__);
 	static int first_call = 1;
 
 	if (first_call) {
@@ -404,7 +406,8 @@ int net_init(void)
 		if (IS_ENABLED(CONFIG_PROT_TCP))
 			tcp_set_tcp_state(TCP_CLOSED);
 	}
-
+	
+	printf("[%s] EXIT (callnig net_init_loop)\n",__func__);
 	return net_init_loop();
 }
 
@@ -415,6 +418,7 @@ int net_init(void)
 
 int net_loop(enum proto_t protocol)
 {
+	printf("[%s] ENTRY\n",__func__);
 	int ret = -EINVAL;
 	enum net_loop_state prev_net_state = net_state;
 
@@ -537,6 +541,7 @@ restart:
 #endif
 #if defined(CONFIG_CMD_WGET)
 		case WGET:
+			printf("[%s] ENTRY\n",__func__);
 			wget_start();
 			break;
 #endif

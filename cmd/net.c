@@ -139,6 +139,7 @@ U_BOOT_CMD(
 #if defined(CONFIG_CMD_WGET)
 static int do_wget(struct cmd_tbl *cmdtp, int flag, int argc, char * const argv[])
 {
+	printf("[%s] ENTRY\n",__func__);
 	return netboot_common(WGET, cmdtp, argc, argv);
 }
 
@@ -305,6 +306,7 @@ static int parse_args(enum proto_t proto, int argc, char *const argv[])
 static int netboot_common(enum proto_t proto, struct cmd_tbl *cmdtp, int argc,
 			  char *const argv[])
 {
+	printf("[%s] ENTRY\n",__func__);
 	char *s;
 	int   rcode = 0;
 	int   size;
@@ -348,30 +350,48 @@ static int netboot_common(enum proto_t proto, struct cmd_tbl *cmdtp, int argc,
 		}
 	}
 
+	printf("[%s] 1\n",__func__);
 	size = net_loop(proto);
+	printf("[%s] 2\n",__func__);
 	if (size < 0) {
+		printf("[%s] 3\n",__func__);
 		bootstage_error(BOOTSTAGE_ID_NET_NETLOOP_OK);
+		printf("[%s] 4\n",__func__);
 		return CMD_RET_FAILURE;
 	}
+	printf("[%s] 5\n",__func__);
 	bootstage_mark(BOOTSTAGE_ID_NET_NETLOOP_OK);
+	printf("[%s] 6\n",__func__);
 
 	/* net_loop ok, update environment */
 	netboot_update_env();
+	printf("[%s] 7\n",__func__);
 
 	/* done if no file was loaded (no errors though) */
 	if (size == 0) {
+		printf("[%s] 8\n",__func__);
 		bootstage_error(BOOTSTAGE_ID_NET_LOADED);
+		printf("[%s] 9\n",__func__);
 		return CMD_RET_SUCCESS;
 	}
 
+	printf("[%s] 10\n",__func__);
 	bootstage_mark(BOOTSTAGE_ID_NET_LOADED);
+	printf("[%s] 11\n",__func__);
 
 	rcode = bootm_maybe_autostart(cmdtp, argv[0]);
+	printf("[%s] 12\n",__func__);
 
-	if (rcode == CMD_RET_SUCCESS)
+	if (rcode == CMD_RET_SUCCESS) {
+		printf("[%s] 13\n",__func__);
 		bootstage_mark(BOOTSTAGE_ID_NET_DONE);
-	else
+		printf("[%s] 14\n",__func__);
+	} else {
+		printf("[%s] 15\n",__func__);
 		bootstage_error(BOOTSTAGE_ID_NET_DONE_ERR);
+		printf("[%s] 16\n",__func__);
+	}
+	printf("[%s] 17\n",__func__);
 	return rcode;
 }
 
