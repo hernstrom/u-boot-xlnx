@@ -143,7 +143,7 @@ static void wget_send_stored(void)
 
 	switch (current_wget_state) {
 	case WGET_CLOSED:
-		debug_cond(DEBUG_WGET, "wget: send SYN\n");
+		printf("wget: send SYN\n");
 		current_wget_state = WGET_CONNECTING;
 		net_send_tcp_packet(0, wget_remote_port, our_port, action,
 				    tcp_seq_num, tcp_ack_num);
@@ -258,8 +258,7 @@ static void wget_connected(uchar *pkt, unsigned int tcp_seq_num,
 	pos = strstr((char *)pkt, http_eom);
 
 	if (!pos) {
-		debug_cond(DEBUG_WGET,
-			   "wget: Connected, data before Header %p\n", pkt);
+		printf("wget: Connected, data before Header %p\n", pkt);
 		pkt_in_q = (void *)image_load_addr + PKT_QUEUE_OFFSET +
 			(pkt_q_idx * PKT_QUEUE_PACKET_SIZE);
 
@@ -279,7 +278,7 @@ static void wget_connected(uchar *pkt, unsigned int tcp_seq_num,
 			return;
 		}
 	} else {
-		debug_cond(DEBUG_WGET, "wget: Connected HTTP Header %p\n", pkt);
+		printf("wget: Connected HTTP Header %p\n", pkt);
 		/* sizeof(http_eom) - 1 is the string length of (http_eom) */
 		hlen = pos - (char *)pkt + sizeof(http_eom) - 1;
 		pos = strstr((char *)pkt, linefeed);
@@ -295,13 +294,11 @@ static void wget_connected(uchar *pkt, unsigned int tcp_seq_num,
 		next_data_seq_num    = tcp_seq_num + len;
 
 		if (strstr((char *)pkt, http_ok) == 0) {
-			debug_cond(DEBUG_WGET,
-				   "wget: Connected Bad Xfer\n");
+			printf("wget: Connected Bad Xfer\n");
 			wget_loop_state = NETLOOP_FAIL;
 			wget_send(action, tcp_seq_num, tcp_ack_num, len);
 		} else {
-			debug_cond(DEBUG_WGET,
-				   "wget: Connctd pkt %p  hlen %x\n",
+			printf("wget: Connctd pkt %p  hlen %x\n",
 				   pkt, hlen);
 
 			pos = strstr((char *)pkt, content_len);
@@ -310,8 +307,7 @@ static void wget_connected(uchar *pkt, unsigned int tcp_seq_num,
 			} else {
 				pos += sizeof(content_len) + 2;
 				strict_strtoul(pos, 10, &content_length);
-				debug_cond(DEBUG_WGET,
-					   "wget: Connected Len %lu\n",
+				printf("wget: Connected Len %lu\n",
 					   content_length);
 			}
 
@@ -326,8 +322,7 @@ static void wget_connected(uchar *pkt, unsigned int tcp_seq_num,
 				}
 			}
 
-			debug_cond(DEBUG_WGET,
-				   "wget: Connected Pkt %p hlen %x\n",
+			printf("wget: Connected Pkt %p hlen %x\n",
 				   pkt, hlen);
 
 			for (i = 0; i < pkt_q_idx; i++) {
@@ -341,8 +336,7 @@ static void wget_connected(uchar *pkt, unsigned int tcp_seq_num,
 					  initial_data_seq_num,
 					  pkt_q[i].len);
 				unmap_sysmem(ptr1);
-				debug_cond(DEBUG_WGET,
-					   "wget: Connctd pkt Q %p len %x\n",
+				printf("wget: Connctd pkt Q %p len %x\n",
 					   pkt_q[i].pkt, pkt_q[i].len);
 				if (err) {
 					wget_loop_state = NETLOOP_FAIL;
@@ -381,16 +375,14 @@ static void wget_handler(uchar *pkt, unsigned int tcp_seq_num,
 
 	switch (current_wget_state) {
 	case WGET_CLOSED:
-		debug_cond(DEBUG_WGET, "wget: Handler: Error!, State wrong\n");
+		printf("wget: Handler: Error!, State wrong\n");
 		break;
 	case WGET_CONNECTING:
-		debug_cond(DEBUG_WGET,
-			   "wget: Connecting In len=%x, Seq=%x, Ack=%x\n",
+		printf("wget: Connecting In len=%x, Seq=%x, Ack=%x\n",
 			   len, tcp_seq_num, tcp_ack_num);
 		if (!len) {
 			if (wget_tcp_state == TCP_ESTABLISHED) {
-				debug_cond(DEBUG_WGET,
-					   "wget: Cting, send, len=%x\n", len);
+				printf("wget: Cting, send, len=%x\n", len);
 				wget_send(action, tcp_seq_num, tcp_ack_num,
 					  len);
 			} else {
@@ -401,7 +393,7 @@ static void wget_handler(uchar *pkt, unsigned int tcp_seq_num,
 		}
 		break;
 	case WGET_CONNECTED:
-		debug_cond(DEBUG_WGET, "wget: Connected seq=%x, len=%x\n",
+		printf("wget: Connected seq=%x, len=%x\n",
 			   tcp_seq_num, len);
 		if (!len) {
 			wget_fail("Image not found, no data returned\n",
@@ -412,12 +404,11 @@ static void wget_handler(uchar *pkt, unsigned int tcp_seq_num,
 		}
 		break;
 	case WGET_TRANSFERRING:
-		debug_cond(DEBUG_WGET,
-			   "wget: Transferring, seq=%x, ack=%x,len=%x\n",
+		printf("wget: Transferring, seq=%x, ack=%x,len=%x\n",
 			   tcp_seq_num, tcp_ack_num, len);
 
 		if (next_data_seq_num != tcp_seq_num) {
-			debug_cond(DEBUG_WGET, "wget: seq=%x packet was lost\n", next_data_seq_num);
+			printf("wget: seq=%x packet was lost\n", next_data_seq_num);
 			return;
 		}
 		next_data_seq_num = tcp_seq_num + len;
@@ -492,8 +483,7 @@ void wget_start(void)
 		image_url = net_boot_file_name;
 	}
 
-	debug_cond(DEBUG_WGET,
-		   "wget: Transfer HTTP Server %pI4; our IP %pI4\n",
+	printf("wget: Transfer HTTP Server %pI4; our IP %pI4\n",
 		   &web_server_ip, &net_ip);
 
 	/* Check if we need to send across this subnet */
@@ -504,20 +494,18 @@ void wget_start(void)
 		our_net.s_addr = net_ip.s_addr & net_netmask.s_addr;
 		server_net.s_addr = net_server_ip.s_addr & net_netmask.s_addr;
 		if (our_net.s_addr != server_net.s_addr)
-			debug_cond(DEBUG_WGET,
-				   "wget: sending through gateway %pI4",
+			printf("wget: sending through gateway %pI4",
 				   &net_gateway);
 	}
-	debug_cond(DEBUG_WGET, "URL '%s'\n", image_url);
+	printf("URL '%s'\n", image_url);
 
 	if (net_boot_file_expected_size_in_blocks) {
-		debug_cond(DEBUG_WGET, "wget: Size is 0x%x Bytes = ",
+		printf("wget: Size is 0x%x Bytes = ",
 			   net_boot_file_expected_size_in_blocks * BLOCKSIZE);
 		print_size(net_boot_file_expected_size_in_blocks * BLOCKSIZE,
 			   "");
 	}
-	debug_cond(DEBUG_WGET,
-		   "\nwget:Load address: 0x%lx\nLoading: *\b", image_load_addr);
+	printf("\nwget:Load address: 0x%lx\nLoading: *\b", image_load_addr);
 
 	if (IS_ENABLED(CONFIG_LMB)) {
 		if (wget_init_load_size()) {
@@ -545,8 +533,7 @@ void wget_start(void)
 	if (ep != NULL)
 		our_port = simple_strtol(ep, NULL, 10);
 
-	debug_cond(DEBUG_WGET,
-		   "\nwget:Remote port: %d\nLocal port:  %d\n", wget_remote_port, our_port);
+	printf("\nwget:Remote port: %d\nLocal port:  %d\n", wget_remote_port, our_port);
 
 	/*
 	 * Zero out server ether to force arp resolution in case
