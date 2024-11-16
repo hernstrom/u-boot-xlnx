@@ -380,6 +380,12 @@ static void wget_handler(uchar *pkt, unsigned int tcp_seq_num,
 		debug_cond(DEBUG_WGET, "wget: Connected seq=%x, len=%x\n",
 			   tcp_seq_num, len);
 		if (!len) {
+			// Talladega workaround: Treat unexpected 0 byte payload as unrecoverable failure.
+			// An interrmittent and difficult to isolate hang at this point has been observed with
+			// Talladega reboot testing, so we upgrade the failure condition to force the wget
+			// command to exit. Outside of the wget command we loop and retry automatically anyway,
+			// so this is the safest workaround we have for now.
+			net_set_state(NETLOOP_FAIL);
 			wget_fail("Image not found, no data returned\n",
 				  tcp_seq_num, tcp_ack_num, action);
 		} else {
