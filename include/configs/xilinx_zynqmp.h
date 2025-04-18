@@ -109,6 +109,12 @@
 
 #define BOOTENV_DEV_QSPI(devtypeu, devtypel, instance) \
 	"bootcmd_" #devtypel #instance "=sf probe " #instance " 0 0 && " \
+		       "if test -n ${multiboot}; then " \
+		       "echo QSPI: Multiboot detected (value=0x${multiboot}); " \
+		       "echo Adjusting default boot.scr script location (value=0x${script_offset_f}); " \
+		       "setexpr qspi_partition_start ${multiboot} * 0x8000; " \
+		       "setexpr script_offset_f ${qspi_partition_start} + ${script_offset_f}; " \
+		       "echo QSPI: New boot.scr script location=0x${script_offset_f}; fi; " \
 		       "sf read $scriptaddr $script_offset_f $script_size_f && " \
 		       "echo QSPI: Trying to boot script at ${scriptaddr} && " \
 		       "source ${scriptaddr}; echo QSPI: SCRIPT FAILED: continuing...;\0"
